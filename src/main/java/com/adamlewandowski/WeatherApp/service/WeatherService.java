@@ -20,9 +20,6 @@ public class WeatherService {
     private Response response;
     private String apiKey = "bbe52d970e691ca4a8c62c8d5c9345d1";
 
-
-
-
     public WeatherInformation getWeather(String cityName, String unit){
         client = new OkHttpClient(); //rest template "Strping rest" zamienić
         ObjectMapper objectMapper = new ObjectMapper(); //wyrzuć maper do konfiguracji configuration

@@ -2,6 +2,7 @@ package com.adamlewandowski.WeatherApp.view;
 
 import com.adamlewandowski.WeatherApp.model.WeatherInformation;
 import com.adamlewandowski.WeatherApp.service.WeatherService;
+import com.vaadin.flow.component.Key;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.dependency.StyleSheet;
 import com.vaadin.flow.component.html.Image;
@@ -14,7 +15,6 @@ import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.router.Route;
 import org.springframework.beans.factory.annotation.Autowired;
-
 
 @Route("Weather")
 @StyleSheet("/css/style.css")
@@ -36,109 +36,94 @@ public class MainView extends VerticalLayout {
     private String icon;
 
     public MainView() {
-        setDefaultHorizontalComponentAlignment(Alignment.CENTER);
-        HorizontalLayout mainLayout = new HorizontalLayout();
-        // mainLayout.getStyle().set("border", "1px solid #9E9E9E");
-
-        //wrzucić do metod
-        //leftLayout
         Label labelInsertCityName = new Label("City name:");
-        labelInsertCityName.getStyle().set("fontWeight", "bold");
         TextField textFieldChooseCity = new TextField();
-        textFieldChooseCity.getStyle().set("label", "Alignment.CENTER");
-        textFieldChooseCity.getStyle().set("color", "white");
-        //textFieldChooseCity.getStyle().set("background", "grey");
         Button buttonSearchCity = new Button("Check Weather", new Icon(VaadinIcon.BOLT));
-        buttonSearchCity.setIconAfterText(true);
-        buttonSearchCity.getStyle().set("color", "white");
-        //buttonSearchCity.getStyle().set("background", "grey");
         Label labelCurrentTempText = new Label();
-        labelCurrentTempText.getStyle().set("fontWeight", "bold");
-        Label labelCurrentTemp = new Label();
-
-
-        //middleLayout
-        Label labelTemp = new Label();
         Label labelTempFeelsLike = new Label();
         Label labelTempMin = new Label();
         Label labelTempMax = new Label();
         Label labelPressure = new Label();
         Label labelHumidity = new Label();
-
-        //rightLayout
         Image image = new Image();
-//        image.setWidth("100px");
-//        image.setHeight("100px");
-
         Label labelSky = new Label();
-        labelSky.getStyle().set("fontWeight", "bold");
 
-
+        setDefaultHorizontalComponentAlignment(Alignment.CENTER);
+        HorizontalLayout mainLayout = new HorizontalLayout();
         VerticalLayout leftLayout = new VerticalLayout();
-        leftLayout.add(labelInsertCityName, textFieldChooseCity, buttonSearchCity);
-
-
         VerticalLayout middleLayout = new VerticalLayout();
-        middleLayout.getStyle().set("fontWeight", "bold");
-        middleLayout.addAndExpand();
-
         VerticalLayout rightLayout = new VerticalLayout();
 
+        mainLayoutDesign(mainLayout);
+        leftLayoutDesign(labelInsertCityName, textFieldChooseCity, buttonSearchCity, labelCurrentTempText);
+
+        leftLayout.add(labelInsertCityName, textFieldChooseCity, buttonSearchCity);
         mainLayout.add(leftLayout, middleLayout, rightLayout);
-
-        //middleLayout.getStyle().set("border", "1px solid #9E9E9E");
-        //middleLayout.setDefaultHorizontalComponentAlignment(Alignment.CENTER);
-        //leftLayout.setDefaultHorizontalComponentAlignment(Alignment.CENTER);
-        rightLayout.setDefaultHorizontalComponentAlignment(Alignment.CENTER);
-
+        mainLayout.getStyle().set("color","white");
         add(mainLayout);
 
-
+        buttonSearchCity.addClickShortcut(Key.ENTER);
         buttonSearchCity.addClickListener(buttonClickEvent -> {
-                    if (!textFieldChooseCity.isEmpty()) {
-                        //to daje info o chmurach
-//                            weatherService.setCityName(textFieldChooseCity.getValue());
-//                            weatherService.setUnit("metric");
-
-//                            JSONArray weatherObject = weatherService.returnWeatherArray(textFieldChooseCity.getValue(),"metric");
-//                            JSONObject mainObject = weatherService.returnMain(textFieldChooseCity.getValue(),"metric");
-                        WeatherInformation weatherInformation = weatherService.getWeather(textFieldChooseCity.getValue(),"metric");
-                        //icon = weatherObject.getJSONObject(0).getString("icon");
+                    if (!textFieldChooseCity.isEmpty() && (weatherService.getWeather(textFieldChooseCity.getValue(), "metric").getWeather() != null)) {
+                        WeatherInformation weatherInformation = weatherService.getWeather(textFieldChooseCity.getValue(), "metric");
                         icon = weatherInformation.getWeather().get(0).getIcon();
                         image.setSrc("http://openweathermap.org/img/wn/" + icon + "@2x.png");
                         image.setAlt("Image not found");
-                        //Image image = new Image("http://openweathermap.org/img/wn/"+ icon +"@2x.png","Image not found");
-                        leftLayout.addAndExpand(labelCurrentTempText, labelCurrentTemp);
-                        middleLayout.addAndExpand(labelTemp, labelTempFeelsLike, labelTempMin, labelTempMax, labelPressure, labelHumidity);
+                        leftLayout.addAndExpand(labelCurrentTempText);
+                        midLayoutDesign(middleLayout);
+                        middleLayout.addAndExpand(labelTempFeelsLike, labelTempMin, labelTempMax, labelPressure, labelHumidity);
+                        rightLayoutDesign(labelSky, rightLayout);
                         rightLayout.addAndExpand(image, labelSky);
-                        //dodać to do oddzielnej metody
-                        //temperature = (Math.round(Double.parseDouble(String.valueOf(mainObject.get("temp")))));
-                        temperature = Math.round(weatherInformation.getMain().getTemp());
+
+                        updateWeatherData(weatherInformation);
+
                         labelCurrentTempText.setText(textFieldChooseCity.getValue() + " " + temperature + "°C");
-
-                            temperatureFeelsLike = Math.round(weatherInformation.getMain().getFeelsLike());
-                            labelTempFeelsLike.setText("Temp feels like: " + temperatureFeelsLike + "°C");
-
-                            temperatureMin = Math.round(weatherInformation.getMain().getTempMin());
-                            labelTempMin.setText("Temp min: " + temperatureMin + "°C");
-
-                            temperatureMax = Math.round(weatherInformation.getMain().getTempMax());
-                            labelTempMax.setText("Temp max: " + temperatureMax + "°C");
-
-                            pressure =  weatherInformation.getMain().getPressure();
-                            labelPressure.setText("Pressure: " + pressure + "hPa");
-
-                            humidity = weatherInformation.getMain().getHumidity();
-                            labelHumidity.setText("Humidity: " + humidity + "%");
-
-                            description = weatherInformation.getWeather().get(0).getDescription();
-                            labelSky.setText(description);
-
-
+                        labelTempFeelsLike.setText("Temp feels like: " + temperatureFeelsLike + "°C");
+                        labelTempMin.setText("Temp min: " + temperatureMin + "°C");
+                        labelTempMax.setText("Temp max: " + temperatureMax + "°C");
+                        labelPressure.setText("Pressure: " + pressure + "hPa");
+                        labelHumidity.setText("Humidity: " + humidity + "%");
+                        labelSky.setText(description);
                     } else
-                        Notification.show("Please insert city name!");
+                        Notification.show("Please insert correct city name!");
                 }
         );
     }
+
+    private void mainLayoutDesign(HorizontalLayout mainLayout) {
+
+    }
+
+    private void leftLayoutDesign(Label labelInsertCityName, TextField textFieldChooseCity, Button buttonSearchCity, Label labelCurrentTempText) {
+        labelInsertCityName.getStyle().set("fontWeight", "bold");
+        textFieldChooseCity.getStyle().set("label", "Alignment.CENTER");
+        textFieldChooseCity.getStyle().set("color", "black");
+        buttonSearchCity.setIconAfterText(true);
+        buttonSearchCity.getStyle().set("color", "white");
+        labelCurrentTempText.getStyle().set("fontWeight", "bold");
+        textFieldChooseCity.getStyle().set("background", "LightSteelBlue");
+        buttonSearchCity.getStyle().set("background", "PowderBlue");
+    }
+
+    private void midLayoutDesign(VerticalLayout middleLayout) {
+        middleLayout.setWidth("500px");
+        middleLayout.getStyle().set("fontWeight", "bold");
+    }
+
+    private void rightLayoutDesign(Label labelSky, VerticalLayout rightLayout) {
+        rightLayout.setDefaultHorizontalComponentAlignment(Alignment.CENTER);
+        labelSky.getStyle().set("fontWeight", "bold");
+    }
+
+    private void updateWeatherData(WeatherInformation weatherInformation) {
+        temperature = Math.round(weatherInformation.getMain().getTemp());
+        temperatureFeelsLike = Math.round(weatherInformation.getMain().getFeelsLike());
+        temperatureMin = Math.round(weatherInformation.getMain().getTempMin());
+        temperatureMax = Math.round(weatherInformation.getMain().getTempMax());
+        pressure = weatherInformation.getMain().getPressure();
+        humidity = weatherInformation.getMain().getHumidity();
+        description = weatherInformation.getWeather().get(0).getDescription();
+    }
+
 }
 
