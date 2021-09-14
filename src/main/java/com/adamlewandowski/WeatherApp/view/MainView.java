@@ -1,6 +1,7 @@
 package com.adamlewandowski.WeatherApp.view;
 
-import com.adamlewandowski.WeatherApp.controller.WeatherService;
+import com.adamlewandowski.WeatherApp.model.WeatherInformation;
+import com.adamlewandowski.WeatherApp.service.WeatherService;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.dependency.StyleSheet;
 import com.vaadin.flow.component.html.Image;
@@ -12,9 +13,6 @@ import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.router.Route;
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 
 
@@ -25,6 +23,7 @@ public class MainView extends VerticalLayout {
     @Autowired
     private WeatherService weatherService;
 
+    //To może być inna klasa chyba coś np City?
     private long temperature;
     private long temperatureFeelsLike;
     private long temperatureMin;
@@ -32,6 +31,7 @@ public class MainView extends VerticalLayout {
     private int pressure;
     private int humidity;
 
+    //To możliwe że do klasy ImageChooser
     private String description;
     private String icon;
 
@@ -40,9 +40,8 @@ public class MainView extends VerticalLayout {
         HorizontalLayout mainLayout = new HorizontalLayout();
         // mainLayout.getStyle().set("border", "1px solid #9E9E9E");
 
-
+        //wrzucić do metod
         //leftLayout
-
         Label labelInsertCityName = new Label("City name:");
         labelInsertCityName.getStyle().set("fontWeight", "bold");
         TextField textFieldChooseCity = new TextField();
@@ -97,46 +96,45 @@ public class MainView extends VerticalLayout {
 
         buttonSearchCity.addClickListener(buttonClickEvent -> {
                     if (!textFieldChooseCity.isEmpty()) {
-                        try {
-                            //to daje info o chmurach
-                            weatherService.setCityName(textFieldChooseCity.getValue());
-                            weatherService.setUnit("metric");
+                        //to daje info o chmurach
+//                            weatherService.setCityName(textFieldChooseCity.getValue());
+//                            weatherService.setUnit("metric");
 
-                            JSONArray weatherObject = weatherService.returnWeatherArray();
-                            JSONObject mainObject = weatherService.returnMain();
-                            icon = weatherObject.getJSONObject(0).getString("icon");
-                            image.setSrc("http://openweathermap.org/img/wn/" + icon + "@2x.png");
-                            image.setAlt("Image not found");
-                            //Image image = new Image("http://openweathermap.org/img/wn/"+ icon +"@2x.png","Image not found");
-                            leftLayout.addAndExpand(labelCurrentTempText, labelCurrentTemp);
-                            middleLayout.addAndExpand(labelTemp, labelTempFeelsLike, labelTempMin, labelTempMax, labelPressure, labelHumidity);
-                            rightLayout.addAndExpand(image, labelSky);
-                            //dodać to do oddzielnej metody
-                            temperature = (Math.round((Double) mainObject.get("temp")));
-                            labelCurrentTempText.setText(textFieldChooseCity.getValue() + " " + temperature + "°C");
+//                            JSONArray weatherObject = weatherService.returnWeatherArray(textFieldChooseCity.getValue(),"metric");
+//                            JSONObject mainObject = weatherService.returnMain(textFieldChooseCity.getValue(),"metric");
+                        WeatherInformation weatherInformation = weatherService.getWeather(textFieldChooseCity.getValue(),"metric");
+                        //icon = weatherObject.getJSONObject(0).getString("icon");
+                        icon = weatherInformation.getWeather().get(0).getIcon();
+                        image.setSrc("http://openweathermap.org/img/wn/" + icon + "@2x.png");
+                        image.setAlt("Image not found");
+                        //Image image = new Image("http://openweathermap.org/img/wn/"+ icon +"@2x.png","Image not found");
+                        leftLayout.addAndExpand(labelCurrentTempText, labelCurrentTemp);
+                        middleLayout.addAndExpand(labelTemp, labelTempFeelsLike, labelTempMin, labelTempMax, labelPressure, labelHumidity);
+                        rightLayout.addAndExpand(image, labelSky);
+                        //dodać to do oddzielnej metody
+                        //temperature = (Math.round(Double.parseDouble(String.valueOf(mainObject.get("temp")))));
+                        temperature = Math.round(weatherInformation.getMain().getTemp());
+                        labelCurrentTempText.setText(textFieldChooseCity.getValue() + " " + temperature + "°C");
 
-                            temperatureFeelsLike = Math.round((Double) mainObject.get("feels_like"));
+                            temperatureFeelsLike = Math.round(weatherInformation.getMain().getFeelsLike());
                             labelTempFeelsLike.setText("Temp feels like: " + temperatureFeelsLike + "°C");
 
-                            temperatureMin = Math.round((Double) mainObject.get("temp_min"));
+                            temperatureMin = Math.round(weatherInformation.getMain().getTempMin());
                             labelTempMin.setText("Temp min: " + temperatureMin + "°C");
 
-                            temperatureMax = Math.round((Double) mainObject.get("temp_max"));
+                            temperatureMax = Math.round(weatherInformation.getMain().getTempMax());
                             labelTempMax.setText("Temp max: " + temperatureMax + "°C");
 
-                            pressure = (Integer) mainObject.get("pressure");
+                            pressure =  weatherInformation.getMain().getPressure();
                             labelPressure.setText("Pressure: " + pressure + "hPa");
 
-                            humidity = (Integer) mainObject.get("humidity");
+                            humidity = weatherInformation.getMain().getHumidity();
                             labelHumidity.setText("Humidity: " + humidity + "%");
 
-                            description = (weatherObject.getJSONObject(0)).getString("description");
+                            description = weatherInformation.getWeather().get(0).getDescription();
                             labelSky.setText(description);
 
 
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                        }
                     } else
                         Notification.show("Please insert city name!");
                 }
