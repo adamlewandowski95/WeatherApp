@@ -59,13 +59,14 @@ public class MainView extends VerticalLayout {
 
         leftLayout.add(labelInsertCityName, textFieldChooseCity, buttonSearchCity);
         mainLayout.add(leftLayout, middleLayout, rightLayout);
-        mainLayout.getStyle().set("color","white");
+        mainLayout.getStyle().set("color", "white");
         add(mainLayout);
 
         buttonSearchCity.addClickShortcut(Key.ENTER);
         buttonSearchCity.addClickListener(buttonClickEvent -> {
-                    if (!textFieldChooseCity.isEmpty() && (weatherService.getWeather(textFieldChooseCity.getValue(), "metric").getWeather() != null)) {
-                        WeatherInformation weatherInformation = weatherService.getWeather(textFieldChooseCity.getValue(), "metric");
+                    WeatherInformation weatherInformation = weatherService.getWeather(textFieldChooseCity.getValue(), "metric");
+                    if (!textFieldChooseCity.isEmpty() && weatherInformation != null) {
+
                         icon = weatherInformation.getWeather().get(0).getIcon();
                         image.setSrc("http://openweathermap.org/img/wn/" + icon + "@2x.png");
                         image.setAlt("Image not found");
