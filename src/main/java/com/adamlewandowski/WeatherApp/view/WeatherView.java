@@ -1,6 +1,8 @@
 package com.adamlewandowski.WeatherApp.view;
 
+import com.adamlewandowski.WeatherApp.Component.NeededWeatherInformationToDisplay;
 import com.adamlewandowski.WeatherApp.model.WeatherInformation;
+import com.adamlewandowski.WeatherApp.service.WeatherDatabaseService;
 import com.adamlewandowski.WeatherApp.service.WeatherService;
 import com.vaadin.flow.component.Key;
 import com.vaadin.flow.component.button.Button;
@@ -18,24 +20,17 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 @Route("Weather")
 @StyleSheet("/css/style.css")
-public class MainView extends VerticalLayout {
+public class WeatherView extends VerticalLayout {
 
     @Autowired
+    private NeededWeatherInformationToDisplay neededWeatherInformationToDisplay;
+    @Autowired
     private WeatherService weatherService;
+    @Autowired
+    private WeatherDatabaseService weatherDatabaseService;
 
-    //To może być inna klasa chyba coś np City?
-    private long temperature;
-    private long temperatureFeelsLike;
-    private long temperatureMin;
-    private long temperatureMax;
-    private int pressure;
-    private int humidity;
 
-    //To możliwe że do klasy ImageChooser
-    private String description;
-    private String icon;
-
-    public MainView() {
+    public WeatherView() {
         Label labelInsertCityName = new Label("City name:");
         TextField textFieldChooseCity = new TextField();
         Button buttonSearchCity = new Button("Check Weather", new Icon(VaadinIcon.BOLT));
@@ -67,24 +62,24 @@ public class MainView extends VerticalLayout {
                     WeatherInformation weatherInformation = weatherService.getWeather(textFieldChooseCity.getValue(), "metric");
                     if (!textFieldChooseCity.isEmpty() && weatherInformation != null) {
 
-                        icon = weatherInformation.getWeather().get(0).getIcon();
-                        image.setSrc("http://openweathermap.org/img/wn/" + icon + "@2x.png");
-                        image.setAlt("Image not found");
+                        neededWeatherInformationToDisplay.setCityName(textFieldChooseCity.getValue());
                         leftLayout.addAndExpand(labelCurrentTempText);
                         midLayoutDesign(middleLayout);
                         middleLayout.addAndExpand(labelTempFeelsLike, labelTempMin, labelTempMax, labelPressure, labelHumidity);
                         rightLayoutDesign(labelSky, rightLayout);
                         rightLayout.addAndExpand(image, labelSky);
 
-                        updateWeatherData(weatherInformation);
+                        labelCurrentTempText.setText(textFieldChooseCity.getValue() + " " + neededWeatherInformationToDisplay.getTemperature() + "°C");
+                        labelTempFeelsLike.setText("Temp feels like: " + neededWeatherInformationToDisplay.getTemperatureFeelsLike() + "°C");
+                        labelTempMin.setText("Temp min: " + neededWeatherInformationToDisplay.getTemperatureMin() + "°C");
+                        labelTempMax.setText("Temp max: " + neededWeatherInformationToDisplay.getTemperatureMax() + "°C");
+                        labelPressure.setText("Pressure: " + neededWeatherInformationToDisplay.getPressure() + "hPa");
+                        labelHumidity.setText("Humidity: " + neededWeatherInformationToDisplay.getHumidity() + "%");
+                        labelSky.setText(neededWeatherInformationToDisplay.getDescription());
+                        image.setSrc("http://openweathermap.org/img/wn/" + neededWeatherInformationToDisplay.getIcon() + "@2x.png");
+                        image.setAlt("Image not found");
 
-                        labelCurrentTempText.setText(textFieldChooseCity.getValue() + " " + temperature + "°C");
-                        labelTempFeelsLike.setText("Temp feels like: " + temperatureFeelsLike + "°C");
-                        labelTempMin.setText("Temp min: " + temperatureMin + "°C");
-                        labelTempMax.setText("Temp max: " + temperatureMax + "°C");
-                        labelPressure.setText("Pressure: " + pressure + "hPa");
-                        labelHumidity.setText("Humidity: " + humidity + "%");
-                        labelSky.setText(description);
+                        weatherDatabaseService.addWeatherForCity(neededWeatherInformationToDisplay);
                     } else
                         Notification.show("Please insert correct city name!");
                 }
@@ -115,16 +110,5 @@ public class MainView extends VerticalLayout {
         rightLayout.setDefaultHorizontalComponentAlignment(Alignment.CENTER);
         labelSky.getStyle().set("fontWeight", "bold");
     }
-
-    private void updateWeatherData(WeatherInformation weatherInformation) {
-        temperature = Math.round(weatherInformation.getMain().getTemp());
-        temperatureFeelsLike = Math.round(weatherInformation.getMain().getFeelsLike());
-        temperatureMin = Math.round(weatherInformation.getMain().getTempMin());
-        temperatureMax = Math.round(weatherInformation.getMain().getTempMax());
-        pressure = weatherInformation.getMain().getPressure();
-        humidity = weatherInformation.getMain().getHumidity();
-        description = weatherInformation.getWeather().get(0).getDescription();
-    }
-
 }
 
