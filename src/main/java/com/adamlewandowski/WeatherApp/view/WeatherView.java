@@ -6,7 +6,6 @@ import com.adamlewandowski.WeatherApp.service.WeatherDatabaseService;
 import com.adamlewandowski.WeatherApp.service.WeatherService;
 import com.vaadin.flow.component.Key;
 import com.vaadin.flow.component.button.Button;
-import com.vaadin.flow.component.dependency.StyleSheet;
 import com.vaadin.flow.component.html.Image;
 import com.vaadin.flow.component.html.Label;
 import com.vaadin.flow.component.icon.Icon;
@@ -15,11 +14,14 @@ import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.TextField;
+import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
+import com.vaadin.flow.router.RouteAlias;
 import org.springframework.beans.factory.annotation.Autowired;
 
-@Route("Weather")
-@StyleSheet("/css/style.css")
+@Route(value = "", layout = MainLayout.class)
+@RouteAlias(value = "", layout = MainLayout.class)
+@PageTitle("Weather")
 public class WeatherView extends VerticalLayout {
 
     //przeprobić na DAO
@@ -48,19 +50,19 @@ public class WeatherView extends VerticalLayout {
         Label labelHumidity = new Label();
         Image image = new Image();
         Label labelSky = new Label();
-
-        setDefaultHorizontalComponentAlignment(Alignment.CENTER);
         HorizontalLayout mainLayout = new HorizontalLayout();
         VerticalLayout leftLayout = new VerticalLayout();
         VerticalLayout middleLayout = new VerticalLayout();
         VerticalLayout rightLayout = new VerticalLayout();
 
+
+        setDefaultHorizontalComponentAlignment(Alignment.CENTER);
         mainLayoutDesign(mainLayout);
         leftLayoutDesign(labelInsertCityName, textFieldChooseCity, buttonSearchCity, labelCurrentTempText);
 
         leftLayout.add(labelInsertCityName, textFieldChooseCity, buttonSearchCity);
         mainLayout.add(leftLayout, middleLayout, rightLayout);
-        mainLayout.getStyle().set("color", "white");
+        //mainLayout.getStyle().set("color", "white");
         add(mainLayout);
 
         buttonSearchCity.addClickShortcut(Key.ENTER);

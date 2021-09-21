@@ -1,0 +1,43 @@
+/*main layout */
+body {
+    background-color: hsl(210, 0%, 80%);
+    /* color: black; */
+  }
+  
+a[highlight] {
+    font-weight: bold;
+    text-decoration: underline;
+}
+
+.header {
+    background-color:hsl(210, 0%, 60%);
+    padding: 0 var(--lumo-space-m);
+}
+
+.header h1.logo {
+    font-size: 1em;
+    margin: var(--lumo-space-m);
+}
+
+
+
+/*list view */
+/* .weather-from-db-view .content {
+    display:flex;
+}
+
+.weather-from-db-view .contract-grid {
+    flex: 2;
+}
+
+.weather-from-db-view .contact-form {
+    flex: 1;
+    padding: var(--lumo-space-m);
+}
+
+@media all and (max-width: 1100px) {
+    .weather-from-db-view.editing .toolbar,
+    .weather-from-db-view.editing .contact-grid {
+        display: none;
+    }
+} */

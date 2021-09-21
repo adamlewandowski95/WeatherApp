@@ -23,7 +23,6 @@ public class WeatherInformationToDisplay {
     //DAO - do bazy danych    // to na razie zostawaimy DTO - data transfer object
     //interracjonalizacja getI18m
     //klasa tyko dla widoku ModelView
-    //main layout
     // poprawa layoutu
     private String cityName;
     private long temperature;
