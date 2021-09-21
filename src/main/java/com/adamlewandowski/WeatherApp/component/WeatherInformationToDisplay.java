@@ -1,9 +1,13 @@
-package com.adamlewandowski.WeatherApp.Component;
+package com.adamlewandowski.WeatherApp.component;
 
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
+import lombok.Setter;
 import org.springframework.stereotype.Component;
 
 import javax.persistence.*;
+import java.sql.Timestamp;
 
 @Entity
 @Table(name = "weather")
@@ -12,11 +16,15 @@ import javax.persistence.*;
 @RequiredArgsConstructor
 @AllArgsConstructor
 @Component
-public class NeededWeatherInformationToDisplay {
+public class WeatherInformationToDisplay {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
-
+    //DAO - do bazy danych    // to na razie zostawaimy DTO - data transfer object
+    //interracjonalizacja getI18m
+    //klasa tyko dla widoku ModelView
+    //main layout
+    // poprawa layoutu
     private String cityName;
     private long temperature;
     private long temperatureFeelsLike;
@@ -26,5 +34,5 @@ public class NeededWeatherInformationToDisplay {
     private int humidity;
     private String description;
     private String icon;
-    //private int currentDate;
+    private Timestamp dateAndTime;
 }

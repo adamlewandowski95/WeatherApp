@@ -1,8 +1,8 @@
 package com.adamlewandowski.WeatherApp.repository;
 
-import com.adamlewandowski.WeatherApp.Component.NeededWeatherInformationToDisplay;
+import com.adamlewandowski.WeatherApp.component.WeatherInformationToDisplay;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 
-public interface NeededWeatherInformationRepository extends JpaRepository<NeededWeatherInformationToDisplay, Long> {
+public interface NeededWeatherInformationRepository extends JpaRepository<WeatherInformationToDisplay, Long> {
 }

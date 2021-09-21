@@ -1,6 +1,6 @@
 package com.adamlewandowski.WeatherApp.view;
 
-import com.adamlewandowski.WeatherApp.Component.NeededWeatherInformationToDisplay;
+import com.adamlewandowski.WeatherApp.component.WeatherInformationToDisplay;
 import com.adamlewandowski.WeatherApp.model.WeatherInformation;
 import com.adamlewandowski.WeatherApp.service.WeatherDatabaseService;
 import com.adamlewandowski.WeatherApp.service.WeatherService;
@@ -22,15 +22,21 @@ import org.springframework.beans.factory.annotation.Autowired;
 @StyleSheet("/css/style.css")
 public class WeatherView extends VerticalLayout {
 
-    @Autowired
-    private NeededWeatherInformationToDisplay neededWeatherInformationToDisplay;
-    @Autowired
+    //przeprobić na DAO
+    private WeatherInformationToDisplay neededWeatherInformationToDisplay;
+    //
     private WeatherService weatherService;
-    @Autowired
     private WeatherDatabaseService weatherDatabaseService;
 
+    @Autowired
+    public WeatherView(WeatherInformationToDisplay neededWeatherInformationToDisplay, WeatherService weatherService, WeatherDatabaseService weatherDatabaseService) {
+        this.neededWeatherInformationToDisplay = neededWeatherInformationToDisplay;
+        this.weatherService = weatherService;
+        this.weatherDatabaseService = weatherDatabaseService;
+        createView();
+    }
 
-    public WeatherView() {
+    public void createView() {
         Label labelInsertCityName = new Label("City name:");
         TextField textFieldChooseCity = new TextField();
         Button buttonSearchCity = new Button("Check Weather", new Icon(VaadinIcon.BOLT));
@@ -85,6 +91,7 @@ public class WeatherView extends VerticalLayout {
                 }
         );
     }
+
 
     private void mainLayoutDesign(HorizontalLayout mainLayout) {
 
