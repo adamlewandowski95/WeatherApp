@@ -19,8 +19,8 @@ import com.vaadin.flow.router.Route;
 import com.vaadin.flow.router.RouteAlias;
 import org.springframework.beans.factory.annotation.Autowired;
 
-@Route(value = "", layout = MainLayout.class)
-@RouteAlias(value = "", layout = MainLayout.class)
+@Route(value = "", layout = MainLayoutView.class)
+@RouteAlias(value = "", layout = MainLayoutView.class)
 @PageTitle("Weather")
 public class WeatherView extends VerticalLayout {
 

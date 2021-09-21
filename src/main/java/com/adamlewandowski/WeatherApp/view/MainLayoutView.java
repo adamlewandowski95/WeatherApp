@@ -14,8 +14,8 @@ import com.vaadin.flow.router.RouterLink;
  * The main view is a top-level placeholder for other views.
  */
 @CssImport("./styles/shared-styles.css")
-public class MainLayout extends AppLayout {
-    public MainLayout() {
+public class MainLayoutView extends AppLayout {
+    public MainLayoutView() {
         createHeader();
         createDrawer();
     }

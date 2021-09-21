@@ -16,7 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import java.util.List;
 import java.util.Objects;
 
-@Route(value = "weatherfromdb", layout = MainLayout.class)
+@Route(value = "weatherfromdb", layout = MainLayoutView.class)
 @PageTitle("Weather from Db")
 public class WeatherFromDbView extends VerticalLayout {
 
@@ -35,8 +35,17 @@ public class WeatherFromDbView extends VerticalLayout {
         add(labelTest, buttonLoadFromDb, labelRespond);
 
         Grid<WeatherInformationToDisplay> table = new Grid<>();
+        table.addColumn(WeatherInformationToDisplay::getId).setHeader("Id");
         table.addColumn(WeatherInformationToDisplay::getCityName).setHeader("City");
         table.addColumn(WeatherInformationToDisplay::getTemperature).setHeader("Temperature");
+        table.addColumn(WeatherInformationToDisplay::getTemperatureFeelsLike).setHeader("Temp feels like");
+        table.addColumn(WeatherInformationToDisplay::getTemperatureMin).setHeader("Temp min");
+        table.addColumn(WeatherInformationToDisplay::getTemperatureMax).setHeader("Temp max");
+        table.addColumn(WeatherInformationToDisplay::getPressure).setHeader("Pressure");
+        table.addColumn(WeatherInformationToDisplay::getHumidity).setHeader("Humidity");
+        table.addColumn(WeatherInformationToDisplay::getDescription).setHeader("Description");
+        table.addColumn(WeatherInformationToDisplay::getDateAndTime).setHeader("Date and time");
+
         List<WeatherInformationToDisplay> weatherList = weatherDatabaseService.getWeatherForCity().getBody();
         table.setItems(weatherList);
         buttonLoadFromDb.addClickShortcut(Key.ENTER);
