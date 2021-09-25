@@ -1,5 +1,5 @@
 
-package com.adamlewandowski.WeatherApp.model;
+package com.adamlewandowski.WeatherApp.model.pojo;
 
 import java.io.Serializable;
 import java.util.HashMap;

@@ -1,6 +1,6 @@
 package com.adamlewandowski.WeatherApp.repository;
 
-import com.adamlewandowski.WeatherApp.component.WeatherInformationToDisplay;
+import com.adamlewandowski.WeatherApp.model.WeatherInformationToDisplay;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 

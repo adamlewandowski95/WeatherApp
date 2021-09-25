@@ -1,4 +1,4 @@
-package com.adamlewandowski.WeatherApp.component;
+package com.adamlewandowski.WeatherApp.model;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -23,7 +23,6 @@ public class WeatherInformationToDisplay {
     //DAO - do bazy danych    // to na razie zostawaimy DTO - data transfer object
     //interracjonalizacja getI18m
     //klasa tyko dla widoku ModelView
-    // poprawa layoutu
     private String cityName;
     private long temperature;
     private long temperatureFeelsLike;

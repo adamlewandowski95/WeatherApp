@@ -1,8 +1,8 @@
 package com.adamlewandowski.WeatherApp.service;
 
 import com.adamlewandowski.WeatherApp.config.Config;
-import com.adamlewandowski.WeatherApp.component.WeatherInformationToDisplay;
-import com.adamlewandowski.WeatherApp.model.WeatherInformation;
+import com.adamlewandowski.WeatherApp.model.WeatherInformationToDisplay;
+import com.adamlewandowski.WeatherApp.model.pojo.WeatherInformation;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.json.JSONException;
