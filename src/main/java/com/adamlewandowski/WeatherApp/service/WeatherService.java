@@ -15,6 +15,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 
+import java.text.SimpleDateFormat;
+
 @Service
 public class WeatherService {
     private RestTemplate restTemplate;
@@ -47,6 +49,8 @@ public class WeatherService {
 
     private void updateWeatherData(WeatherInformation weatherInformation) {
         java.sql.Timestamp date = new java.sql.Timestamp(new java.util.Date().getTime());
+//        String s = new SimpleDateFormat("MM/dd/yyyy HH:mm").format(date);
+//        SimpleDateFormat formatter3=new SimpleDateFormat("MM/dd/yyyy HH:mm");
 
         neededWeatherInformationToDisplay.setTemperature(Math.round(weatherInformation.getMain().getTemp()));
         neededWeatherInformationToDisplay.setTemperatureFeelsLike(Math.round(weatherInformation.getMain().getFeelsLike()));

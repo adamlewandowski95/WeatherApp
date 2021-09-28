@@ -35,20 +35,16 @@ public class WeatherFromDbView extends VerticalLayout implements View {
         Label labelRespond = new Label();
         add(labelTest, buttonLoadFromDb, labelRespond);
 
-        Grid<WeatherInformationToDisplay> table = new Grid<>();
-        table.addColumn(WeatherInformationToDisplay::getId).setHeader("Id");
-        table.addColumn(WeatherInformationToDisplay::getCityName).setHeader("City");
-        table.addColumn(WeatherInformationToDisplay::getTemperature).setHeader("Temperature");
-        table.addColumn(WeatherInformationToDisplay::getTemperatureFeelsLike).setHeader("Temp feels like");
-        table.addColumn(WeatherInformationToDisplay::getTemperatureMin).setHeader("Temp min");
-        table.addColumn(WeatherInformationToDisplay::getTemperatureMax).setHeader("Temp max");
-        table.addColumn(WeatherInformationToDisplay::getPressure).setHeader("Pressure");
-        table.addColumn(WeatherInformationToDisplay::getHumidity).setHeader("Humidity");
-        table.addColumn(WeatherInformationToDisplay::getDescription).setHeader("Description");
-        table.addColumn(WeatherInformationToDisplay::getDateAndTime).setHeader("Date and time");
+        Grid<WeatherInformationToDisplay> table = new Grid<>(WeatherInformationToDisplay.class);
 
         List<WeatherInformationToDisplay> weatherList = weatherDatabaseService.getWeatherForCity().getBody();
         table.setItems(weatherList);
+        table.setSizeFull();
+
+        table.setColumns("id", "cityName", "dateAndTime", "temperature", "temperatureFeelsLike", "temperatureMax", "temperatureMin", "pressure", "humidity", "description", "icon");
+        table.getColumns().forEach(col -> col.setAutoWidth(true));
+        addAndExpand(table);
+
         buttonLoadFromDb.addClickShortcut(Key.ENTER);
         buttonLoadFromDb.addClickListener(buttonClickEvent -> {
             Objects.requireNonNull(weatherList).removeAll(weatherList);
@@ -56,7 +52,5 @@ public class WeatherFromDbView extends VerticalLayout implements View {
             table.setItems(weatherList);
             Notification.show("Button works!");
         });
-        addAndExpand(table);
-
     }
 }

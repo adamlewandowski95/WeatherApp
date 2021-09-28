@@ -8,6 +8,7 @@ import org.springframework.stereotype.Component;
 
 import javax.persistence.*;
 import java.sql.Timestamp;
+import java.text.SimpleDateFormat;
 
 @Entity
 @Table(name = "weather")
@@ -33,4 +34,6 @@ public class WeatherInformationToDisplay {
     private String description;
     private String icon;
     private Timestamp dateAndTime;
+
+
 }
