@@ -24,12 +24,11 @@ public class MainLayoutView extends AppLayout implements View {
     private I18NProviderImplementation i18NProviderImplementation;
 
     @Autowired
-    public MainLayoutView(Config config, I18NProviderImplementation i18NProviderImplementation) { //, LanguageChooser languageChooser ResourceBundle resourceBundle,
+    public MainLayoutView(Config config, I18NProviderImplementation i18NProviderImplementation) {
         this.config = config;
         this.i18NProviderImplementation = i18NProviderImplementation;
         createView();
     }
-
 
     private void createView() {
         createHeader();
@@ -37,39 +36,36 @@ public class MainLayoutView extends AppLayout implements View {
     }
 
     private void createDrawer() {
-        RouterLink weatherForCity = new RouterLink(i18NProviderImplementation.getTranslation("weather.for.city"), WeatherView.class);
-        RouterLink weatherHistorical = new RouterLink(i18NProviderImplementation.getTranslation("historical.weather"), WeatherFromDbView.class);
-        weatherForCity.setHighlightCondition(HighlightConditions.sameLocation());
-        weatherHistorical.setHighlightCondition(HighlightConditions.sameLocation());
-        addToDrawer(new VerticalLayout(
-                weatherForCity, weatherHistorical
-        ));
-
+        RouterLink checkWeatherForCityRouterLink = new RouterLink(i18NProviderImplementation.getTranslation("weather.for.city"), WeatherView.class);
+        RouterLink browseHistoricalWeatherRouterLink = new RouterLink(i18NProviderImplementation.getTranslation("historical.weather"), WeatherFromDbView.class);
+        checkWeatherForCityRouterLink.setHighlightCondition(HighlightConditions.sameLocation());
+        browseHistoricalWeatherRouterLink.setHighlightCondition(HighlightConditions.sameLocation());
+        addToDrawer(new VerticalLayout(checkWeatherForCityRouterLink, browseHistoricalWeatherRouterLink));
     }
 
     private void createHeader() {
-        ComboBox<String> valueComboBox = new ComboBox<>(i18NProviderImplementation.getTranslation("language"));
-        valueComboBox.setHelperText(i18NProviderImplementation.getTranslation("choose.language.text"));
+        ComboBox<String> languageChooserComboBox = new ComboBox<>(i18NProviderImplementation.getTranslation("language"));
+        languageChooserComboBox.setHelperText(i18NProviderImplementation.getTranslation("choose.language.text"));
 
-        valueComboBox.setItems(i18NProviderImplementation.getTranslation("language.eng"), i18NProviderImplementation.getTranslation("language.pl"));
+        languageChooserComboBox.setItems(i18NProviderImplementation.getTranslation("language.eng"), i18NProviderImplementation.getTranslation("language.pl"));
         if (config.getLang().equals("en")) {
-            valueComboBox.setValue(i18NProviderImplementation.getTranslation("language.eng"));
+            languageChooserComboBox.setValue(i18NProviderImplementation.getTranslation("language.eng"));
         } else if (config.getLang().equals("pl")) {
-            valueComboBox.setValue(i18NProviderImplementation.getTranslation("language.pl"));
+            languageChooserComboBox.setValue(i18NProviderImplementation.getTranslation("language.pl"));
         }
 
         H1 logo = new H1(i18NProviderImplementation.getTranslation("welcome.message"));
         logo.addClassName("logo");
-        HorizontalLayout header = new HorizontalLayout(new DrawerToggle(), logo, valueComboBox);
+        HorizontalLayout header = new HorizontalLayout(new DrawerToggle(), logo, languageChooserComboBox);
         header.addClassNames("header");
         header.setWidth("100%");
         header.setDefaultVerticalComponentAlignment(FlexComponent.Alignment.CENTER);
         addToNavbar(header);
 
-        valueComboBox.addValueChangeListener(event -> {
-            if (valueComboBox.getValue().equals(i18NProviderImplementation.getTranslation("language.eng"))) {
+        languageChooserComboBox.addValueChangeListener(event -> {
+            if (languageChooserComboBox.getValue().equals(i18NProviderImplementation.getTranslation("language.eng"))) {
                 config.setLang("en");
-            } else if (valueComboBox.getValue().equals(i18NProviderImplementation.getTranslation("language.pl"))) {
+            } else if (languageChooserComboBox.getValue().equals(i18NProviderImplementation.getTranslation("language.pl"))) {
                 config.setLang("pl");
             }
             UI.getCurrent().getPage().reload();

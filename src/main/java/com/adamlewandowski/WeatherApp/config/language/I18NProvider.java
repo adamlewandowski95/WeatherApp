@@ -8,4 +8,6 @@ public interface I18NProvider extends Serializable {
     List<Locale> getProvidedLocales();
 
     String getTranslation(String var1);
+
+    String getDescriptionTranslation(String description);
 }

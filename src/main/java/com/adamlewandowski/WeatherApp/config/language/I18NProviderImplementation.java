@@ -45,4 +45,32 @@ public class I18NProviderImplementation implements I18NProvider {
             return (resourceBundle.containsKey(key)) ? resourceBundle.getString(key) : key;
         }
     }
+
+    @Override
+    public String getDescriptionTranslation(String description) {
+        if (description.equals("Clear")) {
+            description = getTranslation("description.clear.label");
+        } else if (description.equals("Clouds")) {
+            description = getTranslation("description.few.label");
+        } else if (description.equals("scattered clouds")) {
+            description = getTranslation("description.scattered.label");
+        } else if (description.equals("broken clouds")) {
+            description = getTranslation("description.broken.label");
+        } else if (description.equals("Drizzle")) {
+            description = getTranslation("description.shower.label");
+        } else if (description.equals("Rain")) {
+            description = getTranslation("description.rain.label");
+        } else if (description.equals("Thunderstorm")) {
+            description = getTranslation("description.thunderstorm.label");
+        } else if (description.equals("Snow")) {
+            description = getTranslation("description.snow.label");
+        } else if (description.equals("Mist")) {
+            description = getTranslation("description.mist.label");
+        } else if (description.equals("Tornado")) {
+            description = getTranslation("description.tornado.label");
+        } else {
+            description = getTranslation("description.another.label");
+        }
+        return description;
+    }
 }

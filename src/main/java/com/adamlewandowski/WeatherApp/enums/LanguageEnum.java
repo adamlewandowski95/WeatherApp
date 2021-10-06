@@ -2,9 +2,7 @@ package com.adamlewandowski.WeatherApp.enums;
 
 import java.util.Locale;
 
-
 public enum LanguageEnum {
-
 
     PL("pl"),
     EN("en");
@@ -19,6 +17,5 @@ public enum LanguageEnum {
         Locale locale = new Locale(languageShortForm);
         return locale;
     }
-//    //Można zrobićstreamy ze zmianą formatowania daty i streamy z zmianą nawy broken clouds na polskie
 }
 
