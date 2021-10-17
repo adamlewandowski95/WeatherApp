@@ -1,4 +1,4 @@
-package com.adamlewandowski.WeatherApp.Dao;
+package com.adamlewandowski.dao;
 
 import com.adamlewandowski.WeatherApp.model.WeatherInformationToDisplay;
 import org.springframework.stereotype.Repository;

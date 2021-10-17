@@ -1,7 +1,7 @@
-package com.adamlewandowski.WeatherApp.config.language;
+package com.adamlewandowski.gui.language;
 
-import com.adamlewandowski.WeatherApp.config.Config;
-import com.adamlewandowski.WeatherApp.enums.LanguageEnum;
+import com.adamlewandowski.gui.config.Config;
+import com.adamlewandowski.gui.enums.LanguageEnum;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -46,7 +46,7 @@ public class I18NProviderImplementation implements I18NProvider {
         }
     }
 
-    @Override
+
     public String getDescriptionTranslation(String description) {
         if (description.equals("Clear")) {
             description = getTranslation("description.clear.label");

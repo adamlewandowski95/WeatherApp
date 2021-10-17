@@ -1,6 +1,6 @@
-package com.adamlewandowski.WeatherApp.config;
+package com.adamlewandowski.gui.config;
 
-import com.adamlewandowski.WeatherApp.config.language.I18NProviderImplementation;
+import com.adamlewandowski.gui.language.I18NProviderImplementation;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.vaadin.flow.server.ServiceInitEvent;
@@ -16,7 +16,7 @@ import static java.lang.System.setProperty;
 public class Config implements VaadinServiceInitListener {
     @Getter
     @Setter
-    private String lang = "en";
+    public String lang = "en";
 
     @Getter
     @Setter

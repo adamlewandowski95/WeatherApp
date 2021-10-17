@@ -1,4 +1,4 @@
-package com.adamlewandowski.WeatherApp.config.language;
+package com.adamlewandowski.gui.language;
 
 import java.io.Serializable;
 import java.util.List;
@@ -8,6 +8,4 @@ public interface I18NProvider extends Serializable {
     List<Locale> getProvidedLocales();
 
     String getTranslation(String var1);
-
-    String getDescriptionTranslation(String description);
 }

@@ -1,19 +1,15 @@
-package com.adamlewandowski.WeatherApp.config;
+package com.adamlewandowski.config;
 
-import com.adamlewandowski.WeatherApp.config.language.I18NProviderImplementation;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.vaadin.flow.server.ServiceInitEvent;
-import com.vaadin.flow.server.VaadinServiceInitListener;
 import lombok.Getter;
 import lombok.Setter;
+import org.modelmapper.ModelMapper;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-import static java.lang.System.setProperty;
-
 @Configuration
-public class Config implements VaadinServiceInitListener {
+public class Config {
     @Getter
     @Setter
     private String lang = "en";
@@ -29,9 +25,10 @@ public class Config implements VaadinServiceInitListener {
         return mapper;
     }
 
-    @Override
-    public void serviceInit(ServiceInitEvent serviceInitEvent) {
-        setProperty("vaadin.i18n.provider", I18NProviderImplementation.class.getName());
+    @Bean
+    public ModelMapper modelMapper(){
+        return new ModelMapper();
     }
+
 
 }

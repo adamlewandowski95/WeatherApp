@@ -1,7 +1,7 @@
-package com.adamlewandowski.WeatherApp.service;
+package com.adamlewandowski.service;
 
-import com.adamlewandowski.WeatherApp.dao.WeatherDao;
-import com.adamlewandowski.WeatherApp.repository.WeatherInformationRepository;
+import com.adamlewandowski.dao.WeatherDao;
+import com.adamlewandowski.repository.WeatherInformationRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -19,7 +19,7 @@ public class WeatherDatabaseService {
 
 
     @Autowired
-    public WeatherDatabaseService(ObjectMapper objectMapper, WeatherInformationRepository weatherInformationRepository) { //NeededWeatherInformationRepository neededWeatherInformationRepository,
+    public WeatherDatabaseService(ObjectMapper objectMapper, WeatherInformationRepository weatherInformationRepository) {
         this.objectMapper = objectMapper;
         this.weatherInformationRepository = weatherInformationRepository;
     }

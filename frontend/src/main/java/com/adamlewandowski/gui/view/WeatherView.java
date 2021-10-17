@@ -1,11 +1,10 @@
-package com.adamlewandowski.WeatherApp.view;
+package com.adamlewandowski.gui.view;
 
-import com.adamlewandowski.WeatherApp.config.Config;
-import com.adamlewandowski.WeatherApp.config.language.I18NProviderImplementation;
-import com.adamlewandowski.WeatherApp.dao.WeatherDao;
-import com.adamlewandowski.WeatherApp.model.pojo.WeatherInformation;
-import com.adamlewandowski.WeatherApp.service.WeatherDatabaseService;
-import com.adamlewandowski.WeatherApp.service.WeatherService;
+import com.adamlewandowski.gui.config.Config;
+import com.adamlewandowski.gui.language.I18NProviderImplementation;
+import com.adamlewandowski.gui.pojo.WeatherForEndpoint;
+import com.adamlewandowski.gui.pojo.WeatherPojo;
+import com.adamlewandowski.gui.service.WeatherFromBackend;
 import com.vaadin.flow.component.Key;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.html.Image;
@@ -26,8 +25,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 @PageTitle("Weather")
 public class WeatherView extends VerticalLayout implements View {
 
-    private WeatherService weatherService;
-    private WeatherDatabaseService weatherDatabaseService;
+    private WeatherFromBackend weatherFromBackend;
     private I18NProviderImplementation i18NProviderImplementation;
     private Config config;
 
@@ -49,11 +47,9 @@ public class WeatherView extends VerticalLayout implements View {
 
 
     @Autowired
-    public WeatherView(WeatherService weatherService,
-                       WeatherDatabaseService weatherDatabaseService, I18NProviderImplementation i18NProviderImplementation, Config config) { //WeatherDao weatherDao,
+    public WeatherView(WeatherFromBackend weatherFromBackend, I18NProviderImplementation i18NProviderImplementation, Config config) {
 
-        this.weatherService = weatherService;
-        this.weatherDatabaseService = weatherDatabaseService;
+        this.weatherFromBackend = weatherFromBackend;
         this.i18NProviderImplementation = i18NProviderImplementation;
         this.config = config;
         createView();
@@ -93,25 +89,26 @@ public class WeatherView extends VerticalLayout implements View {
 
     private void updateViewForGivenCity() {
         config.setCityNameBeforeReload(chooseCityTextField.getValue());
-        WeatherInformation weatherInformation = weatherService.getWeather(chooseCityTextField.getValue(), "metric");
-        WeatherDao weatherDao = weatherService.savingDatabase(weatherInformation);
-        if (!chooseCityTextField.isEmpty() && weatherDao != null) {
+        //WeatherInformation weatherInformation = weatherService.getWeather(chooseCityTextField.getValue(), "metric");
+        WeatherForEndpoint weatherPojo = weatherFromBackend.getWeather(chooseCityTextField.getValue(), "metric");
+        // WeatherDao weatherDao = weatherService.savingDatabase(weatherInformation);
+        if (!chooseCityTextField.isEmpty() && weatherPojo != null) {
 
-            weatherDao.setCityName(chooseCityTextField.getValue());
+            weatherPojo.setCityName(chooseCityTextField.getValue());
 
-            currentTempTextLabel.setText(chooseCityTextField.getValue() + " " + weatherDao.getTemperature() + "°C");
-            tempFeelsLikeLabel.setText(i18NProviderImplementation.getTranslation("temp.feels.like.label") + weatherDao.getTemperatureFeelsLike() + "°C");
-            tempMaxLabel.setText(i18NProviderImplementation.getTranslation("temperature.max.label") + weatherDao.getTemperatureMax() + "°C");
-            tempMinLabel.setText(i18NProviderImplementation.getTranslation("temperature.min.label") + weatherDao.getTemperatureMin() + "°C");
-            pressureLabel.setText(i18NProviderImplementation.getTranslation("pressure.label") + weatherDao.getPressure() + "hPa");
-            humidityLabel.setText(i18NProviderImplementation.getTranslation("humidity.label") + weatherDao.getHumidity() + "%");
+            currentTempTextLabel.setText(chooseCityTextField.getValue() + " " + weatherPojo.getTemperature() + "°C");
+            tempFeelsLikeLabel.setText(i18NProviderImplementation.getTranslation("temp.feels.like.label") + weatherPojo.getTemperatureFeelsLike() + "°C");
+            tempMaxLabel.setText(i18NProviderImplementation.getTranslation("temperature.max.label") + weatherPojo.getTemperatureMax() + "°C");
+            tempMinLabel.setText(i18NProviderImplementation.getTranslation("temperature.min.label") + weatherPojo.getTemperatureMin() + "°C");
+            pressureLabel.setText(i18NProviderImplementation.getTranslation("pressure.label") + weatherPojo.getPressure() + "hPa");
+            humidityLabel.setText(i18NProviderImplementation.getTranslation("humidity.label") + weatherPojo.getHumidity() + "%");
 
-            descriptionLabel.setText(i18NProviderImplementation.getDescriptionTranslation(weatherDao.getDescription()));
+            descriptionLabel.setText(i18NProviderImplementation.getDescriptionTranslation(weatherPojo.getDescription()));
 
-            image.setSrc("http://openweathermap.org/img/wn/" + weatherDao.getIcon() + "@2x.png");
+            image.setSrc("http://openweathermap.org/img/wn/" + weatherPojo.getIcon() + "@2x.png");
             image.setAlt(i18NProviderImplementation.getTranslation("icon.alt.label"));
 
-            weatherDatabaseService.addWeatherForCity(weatherDao);
+            //weatherDatabaseService.addWeatherForCity(weatherPojo);
         } else
             Notification.show("Please insert correct city name!");
     }

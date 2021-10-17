@@ -1,4 +1,4 @@
-package com.adamlewandowski.WeatherApp.model;
+package com.adamlewandowski.dao;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -7,8 +7,8 @@ import lombok.Setter;
 import org.springframework.stereotype.Component;
 
 import javax.persistence.*;
+import java.io.Serializable;
 import java.sql.Timestamp;
-import java.text.SimpleDateFormat;
 
 @Entity
 @Table(name = "weather")
@@ -16,24 +16,30 @@ import java.text.SimpleDateFormat;
 @Setter
 @RequiredArgsConstructor
 @AllArgsConstructor
-@Component
-public class WeatherInformationToDisplay {
+public class WeatherDao implements Serializable {
     @Id
+    @Column(name = "id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
-    //DAO - do bazy danych    // to na razie zostawaimy DTO - data transfer object
-    //interracjonalizacja getI18m
-    //klasa tyko dla widoku ModelView
+    @Column(name = "city_name")
     private String cityName;
+    @Column(name = "temperature")
     private long temperature;
+    @Column(name = "temperature_feels_like")
     private long temperatureFeelsLike;
+    @Column(name = "temperature_min")
     private long temperatureMin;
+    @Column(name = "temperature_max")
     private long temperatureMax;
+    @Column(name = "pressure")
     private int pressure;
+    @Column(name = "humidity")
     private int humidity;
+    @Column(name = "description")
     private String description;
+    @Column(name = "icon")
     private String icon;
+    @Column(name = "date_and_time")
     private Timestamp dateAndTime;
-
 
 }

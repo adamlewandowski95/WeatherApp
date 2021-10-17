@@ -1,7 +1,7 @@
-package com.adamlewandowski.WeatherApp.view;
+package com.adamlewandowski.gui.view;
 
-import com.adamlewandowski.WeatherApp.config.Config;
-import com.adamlewandowski.WeatherApp.config.language.I18NProviderImplementation;
+import com.adamlewandowski.gui.config.Config;
+import com.adamlewandowski.gui.language.I18NProviderImplementation;
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.applayout.AppLayout;
 import com.vaadin.flow.component.applayout.DrawerToggle;
@@ -15,9 +15,6 @@ import com.vaadin.flow.router.HighlightConditions;
 import com.vaadin.flow.router.RouterLink;
 import org.springframework.beans.factory.annotation.Autowired;
 
-/**
- * The main view is a top-level placeholder for other views.
- */
 @CssImport("./styles/shared-styles.css")
 public class MainLayoutView extends AppLayout implements View {
     private Config config;
@@ -37,10 +34,10 @@ public class MainLayoutView extends AppLayout implements View {
 
     private void createDrawer() {
         RouterLink checkWeatherForCityRouterLink = new RouterLink(i18NProviderImplementation.getTranslation("weather.for.city"), WeatherView.class);
-        RouterLink browseHistoricalWeatherRouterLink = new RouterLink(i18NProviderImplementation.getTranslation("historical.weather"), WeatherFromDbView.class);
+       // RouterLink browseHistoricalWeatherRouterLink = new RouterLink(i18NProviderImplementation.getTranslation("historical.weather"), WeatherFromDbView.class);
         checkWeatherForCityRouterLink.setHighlightCondition(HighlightConditions.sameLocation());
-        browseHistoricalWeatherRouterLink.setHighlightCondition(HighlightConditions.sameLocation());
-        addToDrawer(new VerticalLayout(checkWeatherForCityRouterLink, browseHistoricalWeatherRouterLink));
+     //   browseHistoricalWeatherRouterLink.setHighlightCondition(HighlightConditions.sameLocation());
+     //   addToDrawer(new VerticalLayout(checkWeatherForCityRouterLink, browseHistoricalWeatherRouterLink));
     }
 
     private void createHeader() {
