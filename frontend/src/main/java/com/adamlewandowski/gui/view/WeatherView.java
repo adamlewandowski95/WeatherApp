@@ -2,8 +2,7 @@ package com.adamlewandowski.gui.view;
 
 import com.adamlewandowski.gui.config.Config;
 import com.adamlewandowski.gui.language.I18NProviderImplementation;
-import com.adamlewandowski.gui.pojo.WeatherForEndpoint;
-import com.adamlewandowski.gui.pojo.WeatherPojo;
+import com.adamlewandowski.gui.model.WeatherForWeatherView;
 import com.adamlewandowski.gui.service.WeatherFromBackend;
 import com.vaadin.flow.component.Key;
 import com.vaadin.flow.component.button.Button;
@@ -61,7 +60,6 @@ public class WeatherView extends VerticalLayout implements View {
     private void createView() {
 
         setDefaultHorizontalComponentAlignment(Alignment.CENTER);
-        mainLayoutDesign();
         leftLayoutDesign();
         midLayoutDesign();
         rightLayoutDesign();
@@ -89,9 +87,7 @@ public class WeatherView extends VerticalLayout implements View {
 
     private void updateViewForGivenCity() {
         config.setCityNameBeforeReload(chooseCityTextField.getValue());
-        //WeatherInformation weatherInformation = weatherService.getWeather(chooseCityTextField.getValue(), "metric");
-        WeatherForEndpoint weatherPojo = weatherFromBackend.getWeather(chooseCityTextField.getValue(), "metric");
-        // WeatherDao weatherDao = weatherService.savingDatabase(weatherInformation);
+        WeatherForWeatherView weatherPojo = weatherFromBackend.getWeather(chooseCityTextField.getValue(), "metric");
         if (!chooseCityTextField.isEmpty() && weatherPojo != null) {
 
             weatherPojo.setCityName(chooseCityTextField.getValue());
@@ -108,15 +104,10 @@ public class WeatherView extends VerticalLayout implements View {
             image.setSrc("http://openweathermap.org/img/wn/" + weatherPojo.getIcon() + "@2x.png");
             image.setAlt(i18NProviderImplementation.getTranslation("icon.alt.label"));
 
-            //weatherDatabaseService.addWeatherForCity(weatherPojo);
         } else
             Notification.show("Please insert correct city name!");
     }
 
-
-    private void mainLayoutDesign() {
-
-    }
 
     private void leftLayoutDesign() {
         insertCityNameLabel.setText(i18NProviderImplementation.getTranslation("insert.city.label"));

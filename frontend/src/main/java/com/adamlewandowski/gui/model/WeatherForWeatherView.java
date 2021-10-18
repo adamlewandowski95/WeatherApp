@@ -1,16 +1,12 @@
-package com.adamlewandowski.pojo;
+package com.adamlewandowski.gui.model;
 
-import lombok.*;
-import org.springframework.stereotype.Component;
-
-import java.sql.Timestamp;
+import lombok.Getter;
+import lombok.Setter;
 
 @Getter
 @Setter
-@AllArgsConstructor
-@RequiredArgsConstructor
-public class WeatherForEndpoint {
-    //private int id;
+
+public class WeatherForWeatherView {
     private String cityName;
     private long temperature;
     private long temperatureFeelsLike;
@@ -20,6 +16,4 @@ public class WeatherForEndpoint {
     private int humidity;
     private String description;
     private String icon;
-    //private Timestamp dateAndTime;
-
 }

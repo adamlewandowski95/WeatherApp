@@ -1,16 +1,14 @@
-package com.adamlewandowski.gui.pojo;
+package com.adamlewandowski.dto;
 
-import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.RequiredArgsConstructor;
 import lombok.Setter;
+
+import java.sql.Timestamp;
 
 @Getter
 @Setter
-@AllArgsConstructor
-@RequiredArgsConstructor
-public class WeatherForEndpoint {
-    //private int id;
+public class WeatherInformationDto {
+    private int id;
     private String cityName;
     private long temperature;
     private long temperatureFeelsLike;
@@ -20,6 +18,5 @@ public class WeatherForEndpoint {
     private int humidity;
     private String description;
     private String icon;
-    //private Timestamp dateAndTime;
-
+    private Timestamp dateAndTime;
 }

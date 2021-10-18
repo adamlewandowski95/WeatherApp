@@ -34,10 +34,10 @@ public class MainLayoutView extends AppLayout implements View {
 
     private void createDrawer() {
         RouterLink checkWeatherForCityRouterLink = new RouterLink(i18NProviderImplementation.getTranslation("weather.for.city"), WeatherView.class);
-       // RouterLink browseHistoricalWeatherRouterLink = new RouterLink(i18NProviderImplementation.getTranslation("historical.weather"), WeatherFromDbView.class);
+        RouterLink browseHistoricalWeatherRouterLink = new RouterLink(i18NProviderImplementation.getTranslation("historical.weather"), WeatherFromDbView.class);
         checkWeatherForCityRouterLink.setHighlightCondition(HighlightConditions.sameLocation());
-     //   browseHistoricalWeatherRouterLink.setHighlightCondition(HighlightConditions.sameLocation());
-     //   addToDrawer(new VerticalLayout(checkWeatherForCityRouterLink, browseHistoricalWeatherRouterLink));
+        browseHistoricalWeatherRouterLink.setHighlightCondition(HighlightConditions.sameLocation());
+        addToDrawer(new VerticalLayout(checkWeatherForCityRouterLink, browseHistoricalWeatherRouterLink));
     }
 
     private void createHeader() {
