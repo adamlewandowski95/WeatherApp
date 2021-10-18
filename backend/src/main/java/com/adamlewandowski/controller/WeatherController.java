@@ -30,5 +30,10 @@ public class WeatherController {
         return ResponseEntity.ok(weatherInformationDtoList);
     }
 
+    @RequestMapping(value = "/checkHistoricalWeather/city={city}", method = RequestMethod.GET)
+    public ResponseEntity<WeatherInformationDto[]> getWeatherForCity(@PathVariable("city") String city) {
+        WeatherInformationDto[] weatherInformationDtoList = weatherService.getHistoricalWeatherForSelectedCityEndpoint(city);
+        return ResponseEntity.ok(weatherInformationDtoList);
+    }
 
 }

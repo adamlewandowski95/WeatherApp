@@ -30,13 +30,22 @@ public class WeatherFromBackend {
     }
 
 
-    public WeatherForDbView[] getHistoricalWeather() {
+    public WeatherForDbView[] getHistoricalWeather(String cityName) {
         ResponseEntity<WeatherForDbView[]> response = null;
-        try {
-            String url = ("http://localhost:8888/checkHistoricalWeather");
-            response = restTemplate.exchange(url, HttpMethod.GET, null, WeatherForDbView[].class);
-        } catch (HttpClientErrorException e) {
-            e.printStackTrace();
+        if (cityName.isEmpty()) {
+            try {
+                String url = ("http://localhost:8888/checkHistoricalWeather");
+                response = restTemplate.exchange(url, HttpMethod.GET, null, WeatherForDbView[].class);
+            } catch (HttpClientErrorException e) {
+                e.printStackTrace();
+            }
+        } else {
+            try {
+                String url = ("http://localhost:8888/checkHistoricalWeather/city=" + cityName);
+                response = restTemplate.exchange(url, HttpMethod.GET, null, WeatherForDbView[].class);
+            } catch (HttpClientErrorException e) {
+                e.printStackTrace();
+            }
         }
         return response.getBody();
     }

@@ -80,7 +80,13 @@ public class WeatherService {
     }
 
     public WeatherInformationDto[] getHistoricalWeatherForEndpoint(){
-        List<WeatherDao> weatherDaoList = weatherDatabaseService.getWeatherForCity().getBody();
+        List<WeatherDao> weatherDaoList = weatherDatabaseService.getWeatherForAllCites().getBody();
+        WeatherInformationDto[] weatherInformationDtoList = convertWeatherDaoToDto(weatherDaoList);
+        return weatherInformationDtoList;
+    }
+
+    public WeatherInformationDto[] getHistoricalWeatherForSelectedCityEndpoint(String cityName){
+        List<WeatherDao> weatherDaoList = weatherDatabaseService.getWeatherForCity(cityName).getBody();
         WeatherInformationDto[] weatherInformationDtoList = convertWeatherDaoToDto(weatherDaoList);
         return weatherInformationDtoList;
     }

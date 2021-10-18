@@ -17,7 +17,9 @@ import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 import com.vaadin.flow.router.RouteAlias;
+import org.apache.http.HttpException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.client.HttpServerErrorException;
 
 @Route(value = "", layout = MainLayoutView.class)
 @RouteAlias(value = "", layout = MainLayoutView.class)
@@ -87,21 +89,26 @@ public class WeatherView extends VerticalLayout implements View {
 
     private void updateViewForGivenCity() {
         config.setCityNameBeforeReload(chooseCityTextField.getValue());
-        WeatherForWeatherView weatherPojo = weatherFromBackend.getWeather(chooseCityTextField.getValue(), "metric");
-        if (!chooseCityTextField.isEmpty() && weatherPojo != null) {
+        WeatherForWeatherView weatherForWeatherView = null;
+        try {
+            weatherForWeatherView  = weatherFromBackend.getWeather(chooseCityTextField.getValue(), "metric");
+        } catch (HttpServerErrorException e){
+            e.printStackTrace();
+        }
+        if (!chooseCityTextField.isEmpty() && weatherForWeatherView != null) {
 
-            weatherPojo.setCityName(chooseCityTextField.getValue());
+            weatherForWeatherView.setCityName(chooseCityTextField.getValue());
 
-            currentTempTextLabel.setText(chooseCityTextField.getValue() + " " + weatherPojo.getTemperature() + "°C");
-            tempFeelsLikeLabel.setText(i18NProviderImplementation.getTranslation("temp.feels.like.label") + weatherPojo.getTemperatureFeelsLike() + "°C");
-            tempMaxLabel.setText(i18NProviderImplementation.getTranslation("temperature.max.label") + weatherPojo.getTemperatureMax() + "°C");
-            tempMinLabel.setText(i18NProviderImplementation.getTranslation("temperature.min.label") + weatherPojo.getTemperatureMin() + "°C");
-            pressureLabel.setText(i18NProviderImplementation.getTranslation("pressure.label") + weatherPojo.getPressure() + "hPa");
-            humidityLabel.setText(i18NProviderImplementation.getTranslation("humidity.label") + weatherPojo.getHumidity() + "%");
+            currentTempTextLabel.setText(chooseCityTextField.getValue() + " " + weatherForWeatherView.getTemperature() + "°C");
+            tempFeelsLikeLabel.setText(i18NProviderImplementation.getTranslation("temp.feels.like.label") + weatherForWeatherView.getTemperatureFeelsLike() + "°C");
+            tempMaxLabel.setText(i18NProviderImplementation.getTranslation("temperature.max.label") + weatherForWeatherView.getTemperatureMax() + "°C");
+            tempMinLabel.setText(i18NProviderImplementation.getTranslation("temperature.min.label") + weatherForWeatherView.getTemperatureMin() + "°C");
+            pressureLabel.setText(i18NProviderImplementation.getTranslation("pressure.label") + weatherForWeatherView.getPressure() + "hPa");
+            humidityLabel.setText(i18NProviderImplementation.getTranslation("humidity.label") + weatherForWeatherView.getHumidity() + "%");
 
-            descriptionLabel.setText(i18NProviderImplementation.getDescriptionTranslation(weatherPojo.getDescription()));
+            descriptionLabel.setText(i18NProviderImplementation.getDescriptionTranslation(weatherForWeatherView.getDescription()));
 
-            image.setSrc("http://openweathermap.org/img/wn/" + weatherPojo.getIcon() + "@2x.png");
+            image.setSrc("http://openweathermap.org/img/wn/" + weatherForWeatherView.getIcon() + "@2x.png");
             image.setAlt(i18NProviderImplementation.getTranslation("icon.alt.label"));
 
         } else
@@ -115,6 +122,7 @@ public class WeatherView extends VerticalLayout implements View {
         insertCityNameLabel.getStyle().set("fontWeight", "bold");
         chooseCityTextField.getStyle().set("label", "Alignment.CENTER");
         chooseCityTextField.getStyle().set("color", "black");
+        chooseCityTextField.setClearButtonVisible(true);
         searchCityButton.setIconAfterText(true);
         searchCityButton.getStyle().set("color", "white");
         currentTempTextLabel.getStyle().set("fontWeight", "bold");

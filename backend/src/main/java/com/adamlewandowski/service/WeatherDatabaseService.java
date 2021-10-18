@@ -20,9 +20,14 @@ public class WeatherDatabaseService {
         this.weatherInformationRepository = weatherInformationRepository;
     }
 
-    public ResponseEntity<List<WeatherDao>> getWeatherForCity() {
+    public ResponseEntity<List<WeatherDao>> getWeatherForAllCites() {
         List<WeatherDao> weatherInformationFromDb = weatherInformationRepository.findAll();
         return ResponseEntity.ok(weatherInformationFromDb);
+    }
+
+    public ResponseEntity<List<WeatherDao>> getWeatherForCity(String cityname) {
+        List<WeatherDao> weatherInformationOfCity = weatherInformationRepository.search(cityname);
+        return ResponseEntity.ok(weatherInformationOfCity);
     }
 
     public ResponseEntity addWeatherForCity(WeatherDao weatherDao) {
