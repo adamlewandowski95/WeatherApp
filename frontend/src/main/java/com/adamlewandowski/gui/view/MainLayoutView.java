@@ -2,9 +2,11 @@ package com.adamlewandowski.gui.view;
 
 import com.adamlewandowski.gui.config.Config;
 import com.adamlewandowski.gui.language.I18NProviderImplementation;
+import com.adamlewandowski.gui.security.SecurityService;
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.applayout.AppLayout;
 import com.vaadin.flow.component.applayout.DrawerToggle;
+import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.combobox.ComboBox;
 import com.vaadin.flow.component.dependency.CssImport;
 import com.vaadin.flow.component.html.H1;
@@ -19,9 +21,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 public class MainLayoutView extends AppLayout implements View {
     private Config config;
     private I18NProviderImplementation i18NProviderImplementation;
+    private final SecurityService securityService;
 
     @Autowired
-    public MainLayoutView(Config config, I18NProviderImplementation i18NProviderImplementation) {
+    public MainLayoutView(Config config, I18NProviderImplementation i18NProviderImplementation, SecurityService securityService) {
+        this.securityService = securityService;
         this.config = config;
         this.i18NProviderImplementation = i18NProviderImplementation;
         createView();
@@ -42,6 +46,7 @@ public class MainLayoutView extends AppLayout implements View {
 
     private void createHeader() {
         ComboBox<String> languageChooserComboBox = new ComboBox<>(i18NProviderImplementation.getTranslation("language"));
+        Button logOut = new Button(i18NProviderImplementation.getTranslation("log.out"),e -> securityService.logout());
         languageChooserComboBox.setHelperText(i18NProviderImplementation.getTranslation("choose.language.text"));
 
         languageChooserComboBox.setItems(i18NProviderImplementation.getTranslation("language.eng"), i18NProviderImplementation.getTranslation("language.pl"));
@@ -53,7 +58,9 @@ public class MainLayoutView extends AppLayout implements View {
 
         H1 logo = new H1(i18NProviderImplementation.getTranslation("welcome.message"));
         logo.addClassName("logo");
-        HorizontalLayout header = new HorizontalLayout(new DrawerToggle(), logo, languageChooserComboBox);
+        HorizontalLayout header = new HorizontalLayout(new DrawerToggle(), logo, languageChooserComboBox, logOut);
+        header.setSizeFull();
+        header.expand(logo);
         header.addClassNames("header");
         header.setWidth("100%");
         header.setDefaultVerticalComponentAlignment(FlexComponent.Alignment.CENTER);

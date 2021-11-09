@@ -21,8 +21,8 @@ import org.apache.http.HttpException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.client.HttpServerErrorException;
 
-@Route(value = "", layout = MainLayoutView.class)
-@RouteAlias(value = "", layout = MainLayoutView.class)
+@Route(value = "weather", layout = MainLayoutView.class)
+@RouteAlias(value = "weather", layout = MainLayoutView.class)
 @PageTitle("Weather")
 public class WeatherView extends VerticalLayout implements View {
 
