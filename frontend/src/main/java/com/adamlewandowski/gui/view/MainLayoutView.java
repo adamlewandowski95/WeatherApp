@@ -42,12 +42,15 @@ public class MainLayoutView extends AppLayout implements View {
         checkWeatherForCityRouterLink.setHighlightCondition(HighlightConditions.sameLocation());
         browseHistoricalWeatherRouterLink.setHighlightCondition(HighlightConditions.sameLocation());
         addToDrawer(new VerticalLayout(checkWeatherForCityRouterLink, browseHistoricalWeatherRouterLink));
+        setDrawerOpened(config.isDrawerVisible());
+
     }
 
     private void createHeader() {
-        ComboBox<String> languageChooserComboBox = new ComboBox<>(i18NProviderImplementation.getTranslation("language"));
+//        ComboBox<String> languageChooserComboBox = new ComboBox<>(i18NProviderImplementation.getTranslation("language"));
+        ComboBox<String> languageChooserComboBox = new ComboBox<>();
         Button logOut = new Button(i18NProviderImplementation.getTranslation("log.out"),e -> securityService.logout());
-        languageChooserComboBox.setHelperText(i18NProviderImplementation.getTranslation("choose.language.text"));
+        //languageChooserComboBox.setHelperText(i18NProviderImplementation.getTranslation("choose.language.text"));
 
         languageChooserComboBox.setItems(i18NProviderImplementation.getTranslation("language.eng"), i18NProviderImplementation.getTranslation("language.pl"));
         if (config.getLang().equals("en")) {
@@ -58,7 +61,8 @@ public class MainLayoutView extends AppLayout implements View {
 
         H1 logo = new H1(i18NProviderImplementation.getTranslation("welcome.message"));
         logo.addClassName("logo");
-        HorizontalLayout header = new HorizontalLayout(new DrawerToggle(), logo, languageChooserComboBox, logOut);
+        DrawerToggle drawerToggle = new DrawerToggle();
+        HorizontalLayout header = new HorizontalLayout(drawerToggle, logo, languageChooserComboBox, logOut);
         header.setSizeFull();
         header.expand(logo);
         header.addClassNames("header");
@@ -74,5 +78,7 @@ public class MainLayoutView extends AppLayout implements View {
             }
             UI.getCurrent().getPage().reload();
         });
+
+        drawerToggle.addClickListener(buttonClickEvent -> config.changeDrawerVisibility());
     }
 }

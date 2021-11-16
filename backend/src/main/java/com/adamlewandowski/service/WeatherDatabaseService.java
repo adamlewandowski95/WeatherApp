@@ -12,6 +12,7 @@ import java.util.List;
 public class WeatherDatabaseService {
 
 
+    private int numberOfRowsToDisplay = 25;
     private WeatherInformationRepository weatherInformationRepository;
 
 
@@ -33,6 +34,36 @@ public class WeatherDatabaseService {
     public ResponseEntity addWeatherForCity(WeatherDao weatherDao) {
         WeatherDao savedWeather = weatherInformationRepository.save(weatherDao);
         return ResponseEntity.ok(savedWeather);
+    }
+    //nowe
+    public ResponseEntity<Long> countAll(String cityName) {
+        long number = weatherInformationRepository.checkNumberOfElements(cityName);
+        return ResponseEntity.ok(number);
+    }
+
+    public ResponseEntity countForCity(String cityname) {
+        long number = weatherInformationRepository.checkNumberOfElements(cityname);
+        return ResponseEntity.ok(number);
+    }
+
+    public ResponseEntity<List<WeatherDao>> getWeatherOfCityForOnePage(String cityname, int page, int numberOfRowsToDisplay) {
+        this.numberOfRowsToDisplay = numberOfRowsToDisplay;
+        List<WeatherDao> weatherInformationOfCity = weatherInformationRepository.searchForOneCityOnePage(cityname, countStartRow(page), numberOfRowsToDisplay);
+        return ResponseEntity.ok(weatherInformationOfCity);
+    }
+
+    public ResponseEntity<List<WeatherDao>> getOnePageOfWeatherForAllCites(int page, int numberOfRowsToDisplay) {
+        this.numberOfRowsToDisplay = numberOfRowsToDisplay;
+        List<WeatherDao> weatherInformationFromDb = weatherInformationRepository.searchForAllCicites(countStartRow(page),numberOfRowsToDisplay);
+        return ResponseEntity.ok(weatherInformationFromDb);
+    }
+
+    private int countStartRow(int page){
+        int startRow = 0;
+        if(page > 1){
+            startRow = numberOfRowsToDisplay * (page - 1);
+        }
+        return startRow;
     }
 
 }

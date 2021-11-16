@@ -19,6 +19,25 @@ public class Config implements VaadinServiceInitListener {
     @Setter
     private String cityNameBeforeReload = "Warszawa";
 
+    @Getter
+    @Setter
+    private int currentPage = 1;
+
+    @Getter
+    @Setter
+    private int numberOfRowsToDisplay = 15;
+
+    @Getter
+    @Setter
+    private String cityNameFromTextField = "";
+
+    @Getter
+    private boolean drawerVisible = false;
+
+    public boolean changeDrawerVisibility(){
+        return drawerVisible = !drawerVisible;
+    }
+
     @Override
     public void serviceInit(ServiceInitEvent serviceInitEvent) {
         setProperty("vaadin.i18n.provider", I18NProviderImplementation.class.getName());

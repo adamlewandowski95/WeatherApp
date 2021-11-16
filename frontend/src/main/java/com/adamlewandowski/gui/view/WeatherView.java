@@ -2,8 +2,8 @@ package com.adamlewandowski.gui.view;
 
 import com.adamlewandowski.gui.config.Config;
 import com.adamlewandowski.gui.language.I18NProviderImplementation;
-import com.adamlewandowski.gui.model.WeatherForWeatherView;
-import com.adamlewandowski.gui.service.WeatherFromBackend;
+import com.adamlewandowski.gui.model.WeatherForPrimaryView;
+import com.adamlewandowski.gui.service.WeatherService;
 import com.vaadin.flow.component.Key;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.html.Image;
@@ -17,7 +17,6 @@ import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 import com.vaadin.flow.router.RouteAlias;
-import org.apache.http.HttpException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.client.HttpServerErrorException;
 
@@ -26,7 +25,7 @@ import org.springframework.web.client.HttpServerErrorException;
 @PageTitle("Weather")
 public class WeatherView extends VerticalLayout implements View {
 
-    private WeatherFromBackend weatherFromBackend;
+    private WeatherService weatherService;
     private I18NProviderImplementation i18NProviderImplementation;
     private Config config;
 
@@ -48,9 +47,9 @@ public class WeatherView extends VerticalLayout implements View {
 
 
     @Autowired
-    public WeatherView(WeatherFromBackend weatherFromBackend, I18NProviderImplementation i18NProviderImplementation, Config config) {
+    public WeatherView(WeatherService weatherService, I18NProviderImplementation i18NProviderImplementation, Config config) {
 
-        this.weatherFromBackend = weatherFromBackend;
+        this.weatherService = weatherService;
         this.i18NProviderImplementation = i18NProviderImplementation;
         this.config = config;
         createView();
@@ -89,26 +88,26 @@ public class WeatherView extends VerticalLayout implements View {
 
     private void updateViewForGivenCity() {
         config.setCityNameBeforeReload(chooseCityTextField.getValue());
-        WeatherForWeatherView weatherForWeatherView = null;
+        WeatherForPrimaryView weatherForPrimaryView = null;
         try {
-            weatherForWeatherView  = weatherFromBackend.getWeather(chooseCityTextField.getValue(), "metric");
+            weatherForPrimaryView = weatherService.getWeather(chooseCityTextField.getValue(), "metric");
         } catch (HttpServerErrorException e){
             e.printStackTrace();
         }
-        if (!chooseCityTextField.isEmpty() && weatherForWeatherView != null) {
+        if (!chooseCityTextField.isEmpty() && weatherForPrimaryView != null) {
 
-            weatherForWeatherView.setCityName(chooseCityTextField.getValue());
+            weatherForPrimaryView.setCityName(chooseCityTextField.getValue());
 
-            currentTempTextLabel.setText(chooseCityTextField.getValue() + " " + weatherForWeatherView.getTemperature() + "°C");
-            tempFeelsLikeLabel.setText(i18NProviderImplementation.getTranslation("temp.feels.like.label") + weatherForWeatherView.getTemperatureFeelsLike() + "°C");
-            tempMaxLabel.setText(i18NProviderImplementation.getTranslation("temperature.max.label") + weatherForWeatherView.getTemperatureMax() + "°C");
-            tempMinLabel.setText(i18NProviderImplementation.getTranslation("temperature.min.label") + weatherForWeatherView.getTemperatureMin() + "°C");
-            pressureLabel.setText(i18NProviderImplementation.getTranslation("pressure.label") + weatherForWeatherView.getPressure() + "hPa");
-            humidityLabel.setText(i18NProviderImplementation.getTranslation("humidity.label") + weatherForWeatherView.getHumidity() + "%");
+            currentTempTextLabel.setText(chooseCityTextField.getValue() + " " + weatherForPrimaryView.getTemperature() + "°C");
+            tempFeelsLikeLabel.setText(i18NProviderImplementation.getTranslation("temp.feels.like.label") + weatherForPrimaryView.getTemperatureFeelsLike() + "°C");
+            tempMaxLabel.setText(i18NProviderImplementation.getTranslation("temperature.max.label") + weatherForPrimaryView.getTemperatureMax() + "°C");
+            tempMinLabel.setText(i18NProviderImplementation.getTranslation("temperature.min.label") + weatherForPrimaryView.getTemperatureMin() + "°C");
+            pressureLabel.setText(i18NProviderImplementation.getTranslation("pressure.label") + weatherForPrimaryView.getPressure() + "hPa");
+            humidityLabel.setText(i18NProviderImplementation.getTranslation("humidity.label") + weatherForPrimaryView.getHumidity() + "%");
 
-            descriptionLabel.setText(i18NProviderImplementation.getDescriptionTranslation(weatherForWeatherView.getDescription()));
+            descriptionLabel.setText(i18NProviderImplementation.getDescriptionTranslation(weatherForPrimaryView.getDescription()));
 
-            image.setSrc("http://openweathermap.org/img/wn/" + weatherForWeatherView.getIcon() + "@2x.png");
+            image.setSrc("http://openweathermap.org/img/wn/" + weatherForPrimaryView.getIcon() + "@2x.png");
             image.setAlt(i18NProviderImplementation.getTranslation("icon.alt.label"));
 
         } else

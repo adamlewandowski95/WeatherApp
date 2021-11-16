@@ -6,7 +6,7 @@ import lombok.Setter;
 @Getter
 @Setter
 
-public class WeatherForWeatherView {
+public class WeatherForPrimaryView {
     private String cityName;
     private long temperature;
     private long temperatureFeelsLike;

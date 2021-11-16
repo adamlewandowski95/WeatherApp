@@ -49,9 +49,7 @@ public class LoginView extends VerticalLayout implements View, BeforeEnterListen
         setJustifyContentMode(JustifyContentMode.CENTER);
 
         login.setAction("login");
-//        login.addLoginListener(loginEvent -> {
-//
-//        });
+
 
 
         googleLoginButton = new Button((i18NProviderImplementation.getTranslation("alt.login.button")), new Icon(VaadinIcon.GOOGLE_PLUS));
