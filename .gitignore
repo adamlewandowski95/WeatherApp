@@ -1,3 +1,7 @@
+### Sensitive Data ###
+backend/src/main/resources/application.properties
+frontend/src/main/resources/application.properties
+
 node_modules
 HELP.md
 target/
