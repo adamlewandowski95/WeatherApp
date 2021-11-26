@@ -10,7 +10,7 @@ import java.util.List;
 
 @Repository
 public interface WeatherInformationRepository extends JpaRepository<WeatherDao, Long> {
-@Query(value = "SELECT * FROM weather WHERE city_name LIKE lower(concat('%', :searchTerm,'%'))", nativeQuery = true)
+    @Query(value = "SELECT * FROM weather WHERE city_name LIKE lower(concat('%', :searchTerm,'%'))", nativeQuery = true)
     List<WeatherDao> search(@Param("searchTerm") String searchTerm);
 
     @Query(value = "SELECT * FROM weather WHERE city_name LIKE lower(concat('%', :searchTerm,'%')) limit :startRow, :numberOfRowsToDisplay", nativeQuery = true)

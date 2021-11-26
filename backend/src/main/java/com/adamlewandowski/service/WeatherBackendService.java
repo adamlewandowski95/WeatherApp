@@ -2,6 +2,7 @@ package com.adamlewandowski.service;
 
 import com.adamlewandowski.config.SpringConfig;
 import com.adamlewandowski.dao.WeatherDao;
+import com.adamlewandowski.dto.RequiredInformationDto;
 import com.adamlewandowski.dto.WeatherInformationDto;
 import com.adamlewandowski.pojo.WeatherInformation;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -9,6 +10,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
@@ -20,8 +22,10 @@ import java.util.List;
 
 @Service
 public class WeatherBackendService {
+    @Value("${api.key}")
+    private String apiKey;
+
     private RestTemplate restTemplate;
-    private String apiKey = "bbe52d970e691ca4a8c62c8d5c9345d1";
     private ObjectMapper objectMapper;
     private String cityName;
     private WeatherDatabaseService weatherDatabaseService;
@@ -103,14 +107,27 @@ public class WeatherBackendService {
         return numberOfElements;
     }
 
-    public WeatherInformationDto[] getOnePageOfHistoricalWeather(int page, int numberOfRowsToDisplay){
-        List<WeatherDao> weatherDaoList = weatherDatabaseService.getOnePageOfWeatherForAllCites(page, numberOfRowsToDisplay).getBody();
+//    public WeatherInformationDto[] getOnePageOfHistoricalWeather(int page, int numberOfRowsToDisplay){
+//        List<WeatherDao> weatherDaoList = weatherDatabaseService.getOnePageOfWeatherForAllCites(page, numberOfRowsToDisplay).getBody();
+//        WeatherInformationDto[] weatherInformationDtoList = convertWeatherDaoToDto(weatherDaoList);
+//        return weatherInformationDtoList;
+//    }
+//TEST @@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+    public WeatherInformationDto[] getOnePageOfHistoricalWeather(RequiredInformationDto requiredInformationDto){
+        List<WeatherDao> weatherDaoList = weatherDatabaseService.getOnePageOfWeatherForAllCites(requiredInformationDto.getPage(), requiredInformationDto.getNumberOfRowsToDisplay()).getBody();
         WeatherInformationDto[] weatherInformationDtoList = convertWeatherDaoToDto(weatherDaoList);
         return weatherInformationDtoList;
     }
 
-    public WeatherInformationDto[] getOnePageOfHistoricalWeatherForOneCity(String cityname, int page, int numberOfRowsToDisplay){
-        List<WeatherDao> weatherDaoList = weatherDatabaseService.getWeatherOfCityForOnePage(cityname, page, numberOfRowsToDisplay).getBody();
+//    public WeatherInformationDto[] getOnePageOfHistoricalWeatherForOneCity(String cityname, int page, int numberOfRowsToDisplay){
+//        List<WeatherDao> weatherDaoList = weatherDatabaseService.getWeatherOfCityForOnePage(cityname, page, numberOfRowsToDisplay).getBody();
+//        WeatherInformationDto[] weatherInformationDtoList = convertWeatherDaoToDto(weatherDaoList);
+//        return weatherInformationDtoList;
+//    }
+//TEST @@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+    public WeatherInformationDto[] getOnePageOfHistoricalWeatherForOneCity(RequiredInformationDto requiredInformationDto){
+
+        List<WeatherDao> weatherDaoList = weatherDatabaseService.getWeatherOfCityForOnePage(requiredInformationDto.getCityName(), requiredInformationDto.getPage(), requiredInformationDto.getNumberOfRowsToDisplay()).getBody();
         WeatherInformationDto[] weatherInformationDtoList = convertWeatherDaoToDto(weatherDaoList);
         return weatherInformationDtoList;
     }

@@ -2,7 +2,7 @@ package com.adamlewandowski.gui.view;
 
 import com.adamlewandowski.gui.config.Config;
 import com.adamlewandowski.gui.language.I18NProviderImplementation;
-import com.adamlewandowski.gui.model.WeatherForPrimaryView;
+import com.adamlewandowski.gui.model.ModelForWeatherView;
 import com.adamlewandowski.gui.service.WeatherService;
 import com.vaadin.flow.component.Key;
 import com.vaadin.flow.component.button.Button;
@@ -23,7 +23,7 @@ import org.springframework.web.client.HttpServerErrorException;
 @Route(value = "weather", layout = MainLayoutView.class)
 @RouteAlias(value = "weather", layout = MainLayoutView.class)
 @PageTitle("Weather")
-public class WeatherView extends VerticalLayout implements View {
+public class WeatherView extends VerticalLayout implements View  {
 
     private WeatherService weatherService;
     private I18NProviderImplementation i18NProviderImplementation;
@@ -48,7 +48,6 @@ public class WeatherView extends VerticalLayout implements View {
 
     @Autowired
     public WeatherView(WeatherService weatherService, I18NProviderImplementation i18NProviderImplementation, Config config) {
-
         this.weatherService = weatherService;
         this.i18NProviderImplementation = i18NProviderImplementation;
         this.config = config;
@@ -88,26 +87,26 @@ public class WeatherView extends VerticalLayout implements View {
 
     private void updateViewForGivenCity() {
         config.setCityNameBeforeReload(chooseCityTextField.getValue());
-        WeatherForPrimaryView weatherForPrimaryView = null;
+        ModelForWeatherView modelForWeatherView = null;
         try {
-            weatherForPrimaryView = weatherService.getWeather(chooseCityTextField.getValue(), "metric");
-        } catch (HttpServerErrorException e){
+            modelForWeatherView = weatherService.getWeather(chooseCityTextField.getValue(), "metric");
+        } catch (HttpServerErrorException e) {
             e.printStackTrace();
         }
-        if (!chooseCityTextField.isEmpty() && weatherForPrimaryView != null) {
+        if (!chooseCityTextField.isEmpty() && modelForWeatherView != null) {
 
-            weatherForPrimaryView.setCityName(chooseCityTextField.getValue());
+            modelForWeatherView.setCityName(chooseCityTextField.getValue());
 
-            currentTempTextLabel.setText(chooseCityTextField.getValue() + " " + weatherForPrimaryView.getTemperature() + "°C");
-            tempFeelsLikeLabel.setText(i18NProviderImplementation.getTranslation("temp.feels.like.label") + weatherForPrimaryView.getTemperatureFeelsLike() + "°C");
-            tempMaxLabel.setText(i18NProviderImplementation.getTranslation("temperature.max.label") + weatherForPrimaryView.getTemperatureMax() + "°C");
-            tempMinLabel.setText(i18NProviderImplementation.getTranslation("temperature.min.label") + weatherForPrimaryView.getTemperatureMin() + "°C");
-            pressureLabel.setText(i18NProviderImplementation.getTranslation("pressure.label") + weatherForPrimaryView.getPressure() + "hPa");
-            humidityLabel.setText(i18NProviderImplementation.getTranslation("humidity.label") + weatherForPrimaryView.getHumidity() + "%");
+            currentTempTextLabel.setText(chooseCityTextField.getValue() + " " + modelForWeatherView.getTemperature() + "°C");
+            tempFeelsLikeLabel.setText(i18NProviderImplementation.getTranslation("temp.feels.like.label") + modelForWeatherView.getTemperatureFeelsLike() + "°C");
+            tempMaxLabel.setText(i18NProviderImplementation.getTranslation("temperature.max.label") + modelForWeatherView.getTemperatureMax() + "°C");
+            tempMinLabel.setText(i18NProviderImplementation.getTranslation("temperature.min.label") + modelForWeatherView.getTemperatureMin() + "°C");
+            pressureLabel.setText(i18NProviderImplementation.getTranslation("pressure.label") + modelForWeatherView.getPressure() + "hPa");
+            humidityLabel.setText(i18NProviderImplementation.getTranslation("humidity.label") + modelForWeatherView.getHumidity() + "%");
 
-            descriptionLabel.setText(i18NProviderImplementation.getDescriptionTranslation(weatherForPrimaryView.getDescription()));
+            descriptionLabel.setText(i18NProviderImplementation.getDescriptionTranslation(modelForWeatherView.getDescription()));
 
-            image.setSrc("http://openweathermap.org/img/wn/" + weatherForPrimaryView.getIcon() + "@2x.png");
+            image.setSrc("http://openweathermap.org/img/wn/" + modelForWeatherView.getIcon() + "@2x.png");
             image.setAlt(i18NProviderImplementation.getTranslation("icon.alt.label"));
 
         } else

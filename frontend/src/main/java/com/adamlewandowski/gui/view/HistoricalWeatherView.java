@@ -1,8 +1,9 @@
 package com.adamlewandowski.gui.view;
 
+import com.adamlewandowski.dto.RequiredInformationDto;
 import com.adamlewandowski.gui.config.Config;
 import com.adamlewandowski.gui.language.I18NProviderImplementation;
-import com.adamlewandowski.gui.model.WeatherForDbView;
+import com.adamlewandowski.gui.model.ModelForDbView;
 import com.adamlewandowski.gui.service.WeatherService;
 import com.opencsv.bean.StatefulBeanToCsv;
 import com.opencsv.bean.StatefulBeanToCsvBuilder;
@@ -36,17 +37,19 @@ import java.util.stream.Stream;
 
 @Route(value = "weatherfromdb", layout = MainLayoutView.class)
 @PageTitle("Weather from Db")
-public class WeatherFromDbView extends VerticalLayout implements View {
+public class HistoricalWeatherView extends VerticalLayout implements View {
 
     private Config config;
     private Label weatherFromDbLabel;
     private TextField filterText = new TextField();
-    private Grid<WeatherForDbView> grid = new Grid<>(WeatherForDbView.class);
+    private Grid<ModelForDbView> grid = new Grid<>(ModelForDbView.class);
     private I18NProviderImplementation i18NProviderImplementation;
     private WeatherService weatherService;
     private Button downloadButton;
     private Anchor downloadAnchor;
-    private List<WeatherForDbView> weatherInformationFromDbList;
+    private Anchor downloadFromBackendAnchor;
+    private Button downloadFromBackendButton;
+    private List<ModelForDbView> weatherInformationFromDbList;
     private HorizontalLayout upLayout = new HorizontalLayout();
     private VerticalLayout leftLayout = new VerticalLayout();
     private HorizontalLayout midLayout = new HorizontalLayout();
@@ -58,10 +61,8 @@ public class WeatherFromDbView extends VerticalLayout implements View {
     private int numberOfPages;
 
 
-
-
     @Autowired
-    public WeatherFromDbView(I18NProviderImplementation i18NProviderImplementation, WeatherService weatherService, Config config) {
+    public HistoricalWeatherView(I18NProviderImplementation i18NProviderImplementation, WeatherService weatherService, Config config) {
         this.i18NProviderImplementation = i18NProviderImplementation;
         this.weatherService = weatherService;
         this.config = config;
@@ -76,13 +77,13 @@ public class WeatherFromDbView extends VerticalLayout implements View {
         configureDownload();
         leftLayout.add(weatherFromDbLabel, filterText, searchCityInDbButton);
         midLayout.add(numberOfElementsComboBox, pageComboBox);
-        rightLayout.add(downloadAnchor);
+        rightLayout.add(downloadAnchor, downloadFromBackendAnchor);
         upLayout.setDefaultVerticalComponentAlignment(Alignment.END);
         upLayout.add(leftLayout, midLayout, rightLayout);
         add(upLayout);
         addAndExpand(grid);
         updateList();
-        useButton();
+        useButtonToSearch();
 
     }
 
@@ -99,23 +100,23 @@ public class WeatherFromDbView extends VerticalLayout implements View {
         });
         pageComboBox.addValueChangeListener(event -> {
             config.setCurrentPage(pageComboBox.getValue());
-             UI.getCurrent().getPage().reload();
+            UI.getCurrent().getPage().reload();
         });
     }
 
-    private void updateNumberOfPages(){
+    private void updateNumberOfPages() {
         numberOfElementsComboBox.setValue(config.getNumberOfRowsToDisplay());
-        int numberOfElements = weatherService.getNumberOfElementsEndPoint(config.getCityNameFromTextField());
+        int numberOfElements = weatherService.getNumberOfElementsInDb(config.getCityNameFromTextField());
         numberOfPages = (int) Math.ceil((double) numberOfElements / config.getNumberOfRowsToDisplay());
         List<Integer> listOfPages = new ArrayList<>();
-        for (int i = 1; i <= numberOfPages; i++){
+        for (int i = 1; i <= numberOfPages; i++) {
             listOfPages.add(i);
         }
         pageComboBox.setItems(listOfPages);
         pageComboBox.setValue(config.getCurrentPage());
     }
 
-//    private void updateList() {
+    //    private void updateList() {
 //        weatherInformationFromDbList = List.of(weatherService.getHistoricalWeather(filterText.getValue()));
 //        configurePagination();
 //        for (WeatherForDbView singleInformationFromList : weatherInformationFromDbList) {
@@ -127,12 +128,20 @@ public class WeatherFromDbView extends VerticalLayout implements View {
     private void updateList() {
 //        weatherInformationFromDbList = List.of(weatherService.getHistoricalWeather(filterText.getValue()));
         filterText.setValue(config.getCityNameFromTextField());
-        weatherInformationFromDbList = List.of(weatherService.getHistoricalWeatherPage(config.getCityNameFromTextField(),config.getCurrentPage(),config.getNumberOfRowsToDisplay()));
-        for (WeatherForDbView singleInformationFromList : weatherInformationFromDbList) {
+        weatherInformationFromDbList = List.of(weatherService.getHistoricalWeatherPage(createRequiredInformationDto()));
+        for (ModelForDbView singleInformationFromList : weatherInformationFromDbList) {
             String description = singleInformationFromList.getDescription();
             singleInformationFromList.setDescription(i18NProviderImplementation.getDescriptionTranslation(description));
         }
         grid.setItems(weatherInformationFromDbList);
+    }
+
+    private RequiredInformationDto createRequiredInformationDto(){
+        RequiredInformationDto requiredInformationDto = new RequiredInformationDto();
+        requiredInformationDto.setCityName(config.getCityNameFromTextField());
+        requiredInformationDto.setPage(config.getCurrentPage());
+        requiredInformationDto.setNumberOfRowsToDisplay(config.getNumberOfRowsToDisplay());
+        return requiredInformationDto;
     }
 
     private void leftLayoutDesign() {
@@ -150,27 +159,28 @@ public class WeatherFromDbView extends VerticalLayout implements View {
 
     }
 
-    private void midLayoutDesign(){
+    private void midLayoutDesign() {
         configurePaginator();
         midLayout.setWidth("650px");
     }
 
-    private void righLayoutDesign(){
+    private void righLayoutDesign() {
         downloadButton = new Button(i18NProviderImplementation.getTranslation("download.anchor"), new Icon(VaadinIcon.DOWNLOAD_ALT));
+        downloadFromBackendButton = new Button(i18NProviderImplementation.getTranslation("download.anchor") + "2", new Icon(VaadinIcon.DOWNLOAD_ALT));
         downloadButton.setIconAfterText(true);
         downloadButton.getStyle().set("color", "DodgerBlue");
         downloadButton.getStyle().set("background", "PowderBlue");
         rightLayout.setWidth("350px");
     }
 
-    private void useButton() {
+    private void useButtonToSearch() {
         searchCityInDbButton.addClickShortcut(Key.ENTER);
         searchCityInDbButton.addClickListener(buttonClickEvent -> {
-            config.setCityNameFromTextField(filterText.getValue());
-            config.setCurrentPage(1);
-            //config.setDrawerVisible(isDrawerVisible());
+                    config.setCityNameFromTextField(filterText.getValue());
+                    config.setCurrentPage(1);
+                    //config.setDrawerVisible(isDrawerVisible());
 
-            UI.getCurrent().getPage().reload();
+                    UI.getCurrent().getPage().reload();
                 }
         );
     }
@@ -191,7 +201,7 @@ public class WeatherFromDbView extends VerticalLayout implements View {
         grid.getColumnByKey("description").setHeader(i18NProviderImplementation.getTranslation("description.column"));
         grid.addColumn(new ComponentRenderer<>(w -> {
             Image image = new Image();
-            image.setSrc("http://openweathermap.org/img/wn/" + ((WeatherForDbView) w).getIcon() + "@2x.png");
+            image.setSrc("http://openweathermap.org/img/wn/" + ((ModelForDbView) w).getIcon() + "@2x.png");
             image.setAlt(i18NProviderImplementation.getTranslation("icon.alt.label"));
             image.setHeight("25%");
             image.setWidth("25%");
@@ -201,49 +211,28 @@ public class WeatherFromDbView extends VerticalLayout implements View {
     }
 
     private void configureDownload() {
-
         StreamResource streamResource = new StreamResource(
                 "weather.csv",
                 () -> {
-//                    Map<String, String> mapping = new
-//                            HashMap<String, String>();
-//                    mapping.put("ID", "id");
-//                    mapping.put("CITYNAME", "cityname");
-//                    mapping.put("TEMPERATURE", "temperature");
-//                    mapping.put("TEMPERATUREFEELSLIKE", "temperaturefeelslike");
-//                    mapping.put("TEMPERATUREMIN", "temperaturemin");
-//                    mapping.put("TEMPERATUREMAX", "temperaturemax");
-//                    mapping.put("PRESSURE", "pressure");
-//                    mapping.put("HUMIDITY", "humidity");
-//                    mapping.put("DESCRIPTION", "description");
-//                    mapping.put("DATEANDTIME", "dateandtime");
-//                    mapping.put("ICON", "icon");
-
-//                    ColumnPositionMappingStrategy mappingStrategy = new ColumnPositionMappingStrategy();
-//                    mappingStrategy.setType(WeatherForDbView.class);
-//                    mappingStrategy.setColumnOrderOnWrite(Comparator.comparing());
-
-                    Stream<WeatherForDbView> historicalWeather = weatherInformationFromDbList.stream();
+                    Stream<ModelForDbView> historicalWeather = weatherInformationFromDbList.stream();
                     StringWriter output = new StringWriter();
-                    StatefulBeanToCsv<WeatherForDbView> beanToCsv = new StatefulBeanToCsvBuilder<WeatherForDbView>(output)
+                    StatefulBeanToCsv<ModelForDbView> beanToCsv = new StatefulBeanToCsvBuilder<ModelForDbView>(output)
                             .withSeparator(';')
                             .withApplyQuotesToAll(false)
                             .build();
-
-
                     try {
                         beanToCsv.write(historicalWeather);
-
                         String contents = output.toString();
                         return new ByteArrayInputStream(contents.getBytes());
                     } catch (CsvDataTypeMismatchException | CsvRequiredFieldEmptyException e) {
                         e.printStackTrace();
                     }
                     return null;
-
                 });
         downloadAnchor = new Anchor(streamResource, "");
         downloadAnchor.add(downloadButton);
+        downloadFromBackendAnchor = new Anchor(streamResource, "");
+        downloadFromBackendAnchor.add(downloadFromBackendButton);
     }
 
 }

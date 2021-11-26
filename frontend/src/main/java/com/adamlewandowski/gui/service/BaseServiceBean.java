@@ -17,6 +17,8 @@ public abstract class BaseServiceBean {
     private final String username = "user";
     private final String password = "user123";
 
+    protected final String BASE_URL = "http://localhost:8888/";
+
     public HttpHeaders getHeaders() {
         HttpHeaders headers = new HttpHeaders();
         headers.set("Authorization", encode64());

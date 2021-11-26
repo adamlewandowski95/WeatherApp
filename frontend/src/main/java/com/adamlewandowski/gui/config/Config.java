@@ -13,7 +13,7 @@ import static java.lang.System.setProperty;
 public class Config implements VaadinServiceInitListener {
     @Getter
     @Setter
-    public String lang = "en";
+    private String lang = "en";
 
     @Getter
     @Setter
