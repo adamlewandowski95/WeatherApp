@@ -1,6 +1,5 @@
 package com.adamlewandowski.gui.model;
 
-import com.opencsv.bean.CsvBindByName;
 import com.opencsv.bean.CsvBindByPosition;
 import lombok.Getter;
 import lombok.Setter;

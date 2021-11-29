@@ -1,5 +1,6 @@
 package com.adamlewandowski.gui.view;
 
+import com.adamlewandowski.dto.RequiredInformationDto;
 import com.adamlewandowski.gui.config.Config;
 import com.adamlewandowski.gui.language.I18NProviderImplementation;
 import com.adamlewandowski.gui.model.ModelForWeatherView;
@@ -23,12 +24,11 @@ import org.springframework.web.client.HttpServerErrorException;
 @Route(value = "weather", layout = MainLayoutView.class)
 @RouteAlias(value = "weather", layout = MainLayoutView.class)
 @PageTitle("Weather")
-public class WeatherView extends VerticalLayout implements View  {
+public class WeatherView extends VerticalLayout {
 
     private WeatherService weatherService;
     private I18NProviderImplementation i18NProviderImplementation;
     private Config config;
-
     private Label insertCityNameLabel = new Label();
     private TextField chooseCityTextField = new TextField();
     private Button searchCityButton = new Button();
@@ -45,7 +45,6 @@ public class WeatherView extends VerticalLayout implements View  {
     private VerticalLayout middleLayout = new VerticalLayout();
     private VerticalLayout rightLayout = new VerticalLayout();
 
-
     @Autowired
     public WeatherView(WeatherService weatherService, I18NProviderImplementation i18NProviderImplementation, Config config) {
         this.weatherService = weatherService;
@@ -58,23 +57,15 @@ public class WeatherView extends VerticalLayout implements View  {
     }
 
     private void createView() {
-
         setDefaultHorizontalComponentAlignment(Alignment.CENTER);
         leftLayoutDesign();
         midLayoutDesign();
         rightLayoutDesign();
-
-
         middleLayout.addAndExpand(tempFeelsLikeLabel, tempMaxLabel, tempMinLabel, pressureLabel, humidityLabel);
-
         rightLayout.addAndExpand(image, descriptionLabel);
-
         leftLayout.add(insertCityNameLabel, chooseCityTextField, searchCityButton, currentTempTextLabel);
-
         mainLayout.add(leftLayout, middleLayout, rightLayout);
-
         add(mainLayout);
-
     }
 
     private void useButton() {
@@ -89,30 +80,28 @@ public class WeatherView extends VerticalLayout implements View  {
         config.setCityNameBeforeReload(chooseCityTextField.getValue());
         ModelForWeatherView modelForWeatherView = null;
         try {
-            modelForWeatherView = weatherService.getWeather(chooseCityTextField.getValue(), "metric");
-        } catch (HttpServerErrorException e) {
-            e.printStackTrace();
-        }
-        if (!chooseCityTextField.isEmpty() && modelForWeatherView != null) {
-
+            modelForWeatherView = weatherService.getWeather(createRequiredInformationDto());
             modelForWeatherView.setCityName(chooseCityTextField.getValue());
-
             currentTempTextLabel.setText(chooseCityTextField.getValue() + " " + modelForWeatherView.getTemperature() + "°C");
             tempFeelsLikeLabel.setText(i18NProviderImplementation.getTranslation("temp.feels.like.label") + modelForWeatherView.getTemperatureFeelsLike() + "°C");
             tempMaxLabel.setText(i18NProviderImplementation.getTranslation("temperature.max.label") + modelForWeatherView.getTemperatureMax() + "°C");
             tempMinLabel.setText(i18NProviderImplementation.getTranslation("temperature.min.label") + modelForWeatherView.getTemperatureMin() + "°C");
             pressureLabel.setText(i18NProviderImplementation.getTranslation("pressure.label") + modelForWeatherView.getPressure() + "hPa");
             humidityLabel.setText(i18NProviderImplementation.getTranslation("humidity.label") + modelForWeatherView.getHumidity() + "%");
-
             descriptionLabel.setText(i18NProviderImplementation.getDescriptionTranslation(modelForWeatherView.getDescription()));
-
             image.setSrc("http://openweathermap.org/img/wn/" + modelForWeatherView.getIcon() + "@2x.png");
             image.setAlt(i18NProviderImplementation.getTranslation("icon.alt.label"));
-
-        } else
+        } catch (HttpServerErrorException e) {
             Notification.show("Please insert correct city name!");
+        }
     }
 
+    private RequiredInformationDto createRequiredInformationDto() {
+        RequiredInformationDto requiredInformationDto = new RequiredInformationDto();
+        requiredInformationDto.setCityName(chooseCityTextField.getValue());
+        requiredInformationDto.setUnit("metric");
+        return requiredInformationDto;
+    }
 
     private void leftLayoutDesign() {
         insertCityNameLabel.setText(i18NProviderImplementation.getTranslation("insert.city.label"));

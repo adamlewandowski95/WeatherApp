@@ -34,10 +34,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Stream;
 
-
 @Route(value = "weatherfromdb", layout = MainLayoutView.class)
 @PageTitle("Weather from Db")
-public class HistoricalWeatherView extends VerticalLayout implements View {
+public class HistoricalWeatherView extends VerticalLayout {
 
     private Config config;
     private Label weatherFromDbLabel;
@@ -54,12 +53,10 @@ public class HistoricalWeatherView extends VerticalLayout implements View {
     private VerticalLayout leftLayout = new VerticalLayout();
     private HorizontalLayout midLayout = new HorizontalLayout();
     private VerticalLayout rightLayout = new VerticalLayout();
-
     private Button searchCityInDbButton = new Button();
     private ComboBox<Integer> numberOfElementsComboBox = new ComboBox<>();
     private ComboBox<Integer> pageComboBox = new ComboBox<>();
     private int numberOfPages;
-
 
     @Autowired
     public HistoricalWeatherView(I18NProviderImplementation i18NProviderImplementation, WeatherService weatherService, Config config) {
@@ -84,7 +81,6 @@ public class HistoricalWeatherView extends VerticalLayout implements View {
         addAndExpand(grid);
         updateList();
         useButtonToSearch();
-
     }
 
     private void configurePaginator() {
@@ -92,7 +88,6 @@ public class HistoricalWeatherView extends VerticalLayout implements View {
         pageComboBox.setHelperText(i18NProviderImplementation.getTranslation("page.combobox"));
         numberOfElementsComboBox.setItems(5, 10, 15, 20, 50, 100);
         updateNumberOfPages();
-
         numberOfElementsComboBox.addValueChangeListener(event -> {
             config.setNumberOfRowsToDisplay(numberOfElementsComboBox.getValue());
             config.setCurrentPage(1);
@@ -106,7 +101,7 @@ public class HistoricalWeatherView extends VerticalLayout implements View {
 
     private void updateNumberOfPages() {
         numberOfElementsComboBox.setValue(config.getNumberOfRowsToDisplay());
-        int numberOfElements = weatherService.getNumberOfElementsInDb(config.getCityNameFromTextField());
+        int numberOfElements = weatherService.getNumberOfElementsInDb(createRequiredInformationDto());
         numberOfPages = (int) Math.ceil((double) numberOfElements / config.getNumberOfRowsToDisplay());
         List<Integer> listOfPages = new ArrayList<>();
         for (int i = 1; i <= numberOfPages; i++) {
@@ -116,17 +111,7 @@ public class HistoricalWeatherView extends VerticalLayout implements View {
         pageComboBox.setValue(config.getCurrentPage());
     }
 
-    //    private void updateList() {
-//        weatherInformationFromDbList = List.of(weatherService.getHistoricalWeather(filterText.getValue()));
-//        configurePagination();
-//        for (WeatherForDbView singleInformationFromList : weatherInformationFromDbList) {
-//            String description = singleInformationFromList.getDescription();
-//            singleInformationFromList.setDescription(i18NProviderImplementation.getDescriptionTranslation(description));
-//        }
-//        grid.setItems(weatherInformationFromDbList);
-//    }
     private void updateList() {
-//        weatherInformationFromDbList = List.of(weatherService.getHistoricalWeather(filterText.getValue()));
         filterText.setValue(config.getCityNameFromTextField());
         weatherInformationFromDbList = List.of(weatherService.getHistoricalWeatherPage(createRequiredInformationDto()));
         for (ModelForDbView singleInformationFromList : weatherInformationFromDbList) {
@@ -136,7 +121,7 @@ public class HistoricalWeatherView extends VerticalLayout implements View {
         grid.setItems(weatherInformationFromDbList);
     }
 
-    private RequiredInformationDto createRequiredInformationDto(){
+    private RequiredInformationDto createRequiredInformationDto() {
         RequiredInformationDto requiredInformationDto = new RequiredInformationDto();
         requiredInformationDto.setCityName(config.getCityNameFromTextField());
         requiredInformationDto.setPage(config.getCurrentPage());
@@ -156,7 +141,6 @@ public class HistoricalWeatherView extends VerticalLayout implements View {
         searchCityInDbButton.getStyle().set("color", "white");
         searchCityInDbButton.getStyle().set("background", "PowderBlue");
         leftLayout.setWidth("600px");
-
     }
 
     private void midLayoutDesign() {
@@ -178,16 +162,12 @@ public class HistoricalWeatherView extends VerticalLayout implements View {
         searchCityInDbButton.addClickListener(buttonClickEvent -> {
                     config.setCityNameFromTextField(filterText.getValue());
                     config.setCurrentPage(1);
-                    //config.setDrawerVisible(isDrawerVisible());
-
                     UI.getCurrent().getPage().reload();
                 }
         );
     }
 
-
     private void configureTable() {
-        //grid.setSizeFull();
         grid.setColumns("id", "cityName", "dateAndTime", "temperature", "temperatureFeelsLike", "temperatureMax", "temperatureMin", "pressure", "humidity", "description");
         grid.getColumnByKey("id").setHeader(i18NProviderImplementation.getTranslation("id.column"));
         grid.getColumnByKey("cityName").setHeader(i18NProviderImplementation.getTranslation("city.name.column"));
@@ -234,5 +214,4 @@ public class HistoricalWeatherView extends VerticalLayout implements View {
         downloadFromBackendAnchor = new Anchor(streamResource, "");
         downloadFromBackendAnchor.add(downloadFromBackendButton);
     }
-
 }

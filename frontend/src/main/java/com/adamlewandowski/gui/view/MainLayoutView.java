@@ -18,7 +18,7 @@ import com.vaadin.flow.router.RouterLink;
 import org.springframework.beans.factory.annotation.Autowired;
 
 @CssImport("./styles/shared-styles.css")
-public class MainLayoutView extends AppLayout implements View {
+public class MainLayoutView extends AppLayout {
     private Config config;
     private I18NProviderImplementation i18NProviderImplementation;
     private final SecurityService securityService;
@@ -43,22 +43,17 @@ public class MainLayoutView extends AppLayout implements View {
         browseHistoricalWeatherRouterLink.setHighlightCondition(HighlightConditions.sameLocation());
         addToDrawer(new VerticalLayout(checkWeatherForCityRouterLink, browseHistoricalWeatherRouterLink));
         setDrawerOpened(config.isDrawerVisible());
-
     }
 
     private void createHeader() {
-//        ComboBox<String> languageChooserComboBox = new ComboBox<>(i18NProviderImplementation.getTranslation("language"));
         ComboBox<String> languageChooserComboBox = new ComboBox<>();
-        Button logOut = new Button(i18NProviderImplementation.getTranslation("log.out"),e -> securityService.logout());
-        //languageChooserComboBox.setHelperText(i18NProviderImplementation.getTranslation("choose.language.text"));
-
+        Button logOut = new Button(i18NProviderImplementation.getTranslation("log.out"), e -> securityService.logout());
         languageChooserComboBox.setItems(i18NProviderImplementation.getTranslation("language.eng"), i18NProviderImplementation.getTranslation("language.pl"));
         if (config.getLang().equals("en")) {
             languageChooserComboBox.setValue(i18NProviderImplementation.getTranslation("language.eng"));
         } else if (config.getLang().equals("pl")) {
             languageChooserComboBox.setValue(i18NProviderImplementation.getTranslation("language.pl"));
         }
-
         H1 logo = new H1(i18NProviderImplementation.getTranslation("welcome.message"));
         logo.addClassName("logo");
         DrawerToggle drawerToggle = new DrawerToggle();
@@ -69,7 +64,6 @@ public class MainLayoutView extends AppLayout implements View {
         header.setWidth("100%");
         header.setDefaultVerticalComponentAlignment(FlexComponent.Alignment.CENTER);
         addToNavbar(header);
-
         languageChooserComboBox.addValueChangeListener(event -> {
             if (languageChooserComboBox.getValue().equals(i18NProviderImplementation.getTranslation("language.eng"))) {
                 config.setLang("en");
@@ -78,7 +72,6 @@ public class MainLayoutView extends AppLayout implements View {
             }
             UI.getCurrent().getPage().reload();
         });
-
         drawerToggle.addClickListener(buttonClickEvent -> config.changeDrawerVisibility());
     }
 }

@@ -10,12 +10,8 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 @EnableWebSecurity
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
-    //    private String userName = "user";
-//    private String pass = "user123";
-
-        @Override
-        protected void configure(HttpSecurity httpSecurity)  throws Exception
-    {
+    @Override
+    protected void configure(HttpSecurity httpSecurity) throws Exception {
         httpSecurity
                 .csrf().disable()
                 .authorizeRequests()

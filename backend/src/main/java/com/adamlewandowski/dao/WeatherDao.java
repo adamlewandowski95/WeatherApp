@@ -40,5 +40,4 @@ public class WeatherDao implements Serializable {
     private String icon;
     @Column(name = "date_and_time")
     private Timestamp dateAndTime;
-
 }

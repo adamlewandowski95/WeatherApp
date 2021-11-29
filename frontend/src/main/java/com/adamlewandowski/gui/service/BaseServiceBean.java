@@ -1,12 +1,9 @@
 package com.adamlewandowski.gui.service;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.client.RestTemplate;
 
 import java.util.Base64;
 
@@ -16,7 +13,6 @@ import java.util.Base64;
 public abstract class BaseServiceBean {
     private final String username = "user";
     private final String password = "user123";
-
     protected final String BASE_URL = "http://localhost:8888/";
 
     public HttpHeaders getHeaders() {
@@ -32,5 +28,4 @@ public abstract class BaseServiceBean {
         String header = "Basic " + encodedString;
         return header;
     }
-
 }

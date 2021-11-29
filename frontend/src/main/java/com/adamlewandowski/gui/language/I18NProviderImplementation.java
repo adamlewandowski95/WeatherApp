@@ -13,15 +13,15 @@ import static java.util.ResourceBundle.getBundle;
 @Component
 public class I18NProviderImplementation implements I18NProvider {
 
+    private Config config;
+    private static final String RESOURCE_BUNDLE_NAME = "vaadinapp";
+    private static final ResourceBundle RESOURCE_BUNDLE_EN = getBundle(RESOURCE_BUNDLE_NAME, LanguageEnum.EN.getLanguageLocale());
+    private final ResourceBundle RESOURCE_BUNDLE_PL = getBundle(RESOURCE_BUNDLE_NAME, LanguageEnum.PL.getLanguageLocale());
+
     @Autowired
-    Config config;
-
-    public static final String RESOURCE_BUNDLE_NAME = "vaadinapp";
-
-    static final ResourceBundle RESOURCE_BUNDLE_EN = getBundle(RESOURCE_BUNDLE_NAME, LanguageEnum.EN.getLanguageLocale());
-
-    static final ResourceBundle RESOURCE_BUNDLE_PL = getBundle(RESOURCE_BUNDLE_NAME, LanguageEnum.PL.getLanguageLocale());
-
+    public I18NProviderImplementation(Config config){
+        this.config = config;
+    }
 
     @Override
     public String getTranslation(String key) {
@@ -36,7 +36,6 @@ public class I18NProviderImplementation implements I18NProvider {
             return (resourceBundle.containsKey(key)) ? resourceBundle.getString(key) : key;
         }
     }
-
 
     public String getDescriptionTranslation(String description) {
         if (description.equals("Clear")) {

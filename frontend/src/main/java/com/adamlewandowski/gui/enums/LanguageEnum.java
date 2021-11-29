@@ -2,9 +2,7 @@ package com.adamlewandowski.gui.enums;
 
 import java.util.Locale;
 
-
 public enum LanguageEnum {
-
 
     PL("pl"),
     EN("en");
